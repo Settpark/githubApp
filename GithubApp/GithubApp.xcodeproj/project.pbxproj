@@ -11,6 +11,7 @@
 		8213F01527339FD300125B4C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8213F01427339FD300125B4C /* SceneDelegate.swift */; };
 		8213F01727339FD300125B4C /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8213F01627339FD300125B4C /* MainViewController.swift */; };
 		8213F01C27339FD500125B4C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8213F01B27339FD500125B4C /* Assets.xcassets */; };
+		82F1733527341346001513E3 /* Model in Resources */ = {isa = PBXBuildFile; fileRef = 82F1733427341346001513E3 /* Model */; };
 		E0A7BBF840306E38D32C11D2 /* Pods_GithubApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 698E803A8C7671CECEE4C58F /* Pods_GithubApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -23,6 +24,7 @@
 		8213F01627339FD300125B4C /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		8213F01B27339FD500125B4C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8213F02027339FD500125B4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		82F1733427341346001513E3 /* Model */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Model; sourceTree = "<group>"; };
 		F368AB1849E3286C511066A6 /* Pods-GithubApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GithubApp.debug.xcconfig"; path = "Target Support Files/Pods-GithubApp/Pods-GithubApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -76,6 +78,7 @@
 		8213F01127339FD300125B4C /* GithubApp */ = {
 			isa = PBXGroup;
 			children = (
+				82F1733427341346001513E3 /* Model */,
 				8213F01227339FD300125B4C /* AppDelegate.swift */,
 				8213F01427339FD300125B4C /* SceneDelegate.swift */,
 				8213F01627339FD300125B4C /* MainViewController.swift */,
@@ -145,6 +148,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				82F1733527341346001513E3 /* Model in Resources */,
 				8213F01C27339FD500125B4C /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
