@@ -11,6 +11,6 @@ struct RepositoriesModel: Decodable {
     let name: String
     let owner: Owner
     let description: String
-    let stargazerCount: Int
+    let stargazersCount: Int
     let topics: [String]?
 }

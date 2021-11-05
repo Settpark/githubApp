@@ -9,7 +9,7 @@ import Foundation
 import RxCocoa
 import RxSwift
 
-class APIService: APIServiceType {
+final class APIService: APIServiceType {
     private let endPoint: EndPoint
     private let urlsession: URLSession
     
@@ -22,7 +22,7 @@ class APIService: APIServiceType {
         let url = self.endPoint.createValidURL(path: path, query: query)
         let request = URLRequest.init(url: url)
         return self.urlsession.rx.data(request: request)
-            .flatMap { [unowned self] data in
+            .flatMap { data in
                 return self.decodedData(type: type, data: data)
             }
     }
