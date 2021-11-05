@@ -9,7 +9,7 @@ import Foundation
 import RxCocoa
 import RxSwift
 
-final class APIService: APIServiceType {
+struct APIService: APIServiceType {
     private let endPoint: EndPoint
     private let urlsession: URLSession
     
