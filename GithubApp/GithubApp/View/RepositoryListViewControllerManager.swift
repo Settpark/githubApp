@@ -58,10 +58,3 @@ struct RepositoryListViewControllerManager: ViewDrawManager {
     }
 }
 
-
-enum ViewRatio: CGFloat {
-    case topViewHeightRatio = 16
-    case titleWidthRatio = 5
-    case buttonWidthRatio = 6
-    case buttonTrailingAnchor = -10
-}
