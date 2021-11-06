@@ -8,15 +8,15 @@
 import Foundation
 import RxDataSources
 
-struct SectionOfCustomData {
+struct RepositoryListSectionData {
 //  var header: String
   var items: [Item]
 }
 
-extension SectionOfCustomData: SectionModelType {
+extension RepositoryListSectionData: SectionModelType {
   typealias Item = RepositoriesModel
 
-   init(original: SectionOfCustomData, items: [Item]) {
+   init(original: RepositoryListSectionData, items: [Item]) {
     self = original
     self.items = items
   }

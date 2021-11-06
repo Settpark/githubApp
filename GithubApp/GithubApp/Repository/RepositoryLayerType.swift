@@ -8,6 +8,6 @@
 import Foundation
 import RxSwift
 
-protocol RepositoryType {
+protocol RepositoryLayerType {
     func RepositoryList(path: Paths, query: String) -> Observable<SearchResult>
 }

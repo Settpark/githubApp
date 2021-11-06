@@ -11,16 +11,20 @@ import RxDataSources
 
 final class RepositoryListViewController: UIViewController {
     
-    private let disposeBag: DisposeBag
-    private var listDataSource: RxTableViewSectionedReloadDataSource<SectionOfCustomData>!
+    private var disposeBag: DisposeBag
+    private var listDataSource: RxTableViewSectionedReloadDataSource<RepositoryListSectionData>!
+    private let viewModel: RepositoryListViewModel
+    private var tableView = UITableView()
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         self.disposeBag = DisposeBag()
+        self.viewModel = RepositoryListViewModel(repositoryLayer: RepositoryLayer.init(apiService: APIService(endPoint: EndPoint.init())))
         super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
         self.disposeBag = DisposeBag()
+        self.viewModel = RepositoryListViewModel(repositoryLayer: RepositoryLayer.init(apiService: APIService(endPoint: EndPoint.init())))
         super.init(coder: coder)
     }
     
@@ -34,7 +38,12 @@ final class RepositoryListViewController: UIViewController {
         let titleView = drawTopview()
         let searchField = drawTextField(constraint: titleView)
         drawSearchbutton(constraint: searchField)
-        let tableView = drawTableView(constraint: searchField)
+        self.tableView = drawTableView(constraint: searchField)
+        self.tableView.register(RepositoryListCell.self, forCellReuseIdentifier: RepositoryListCell.cellIdentifier)
+        self.tableView.rx
+            .setDelegate(self)
+            .disposed(by: self.disposeBag)
+        initDataSource()
     }
     
     func drawButton(superView: UIView) -> UIButton {
@@ -116,13 +125,22 @@ final class RepositoryListViewController: UIViewController {
 
 extension RepositoryListViewController {
     private func initDataSource() {
-        let dataSource = RxTableViewSectionedReloadDataSource<SectionOfCustomData>(
+        self.listDataSource = RxTableViewSectionedReloadDataSource<RepositoryListSectionData>(
             configureCell: { dataSource, tableView, indexPath, item in
-                guard let cell: RepositoryListCell = tableView.dequeueReusableCell(withIdentifier: RepositoryListCell.cellidentifier, for: indexPath) as? RepositoryListCell else {
+                guard let cell: RepositoryListCell = tableView.dequeueReusableCell(withIdentifier: RepositoryListCell.cellIdentifier, for: indexPath) as? RepositoryListCell else {
                     return UITableViewCell()
                 }
                 cell.configureText()
                 return cell
             })
+        
+        self.viewModel
+            .searchResult(path: .Repositories, query: "RxSwift")
+            .bind(to: self.tableView.rx.items(dataSource: listDataSource))
+            .disposed(by: disposeBag)
     }
+}
+
+extension RepositoryListViewController: UITableViewDelegate {
+    
 }

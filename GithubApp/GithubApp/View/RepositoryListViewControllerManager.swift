@@ -8,7 +8,7 @@
 import UIKit
 import RxSwift
 
-struct RepositoryListViewControllerManager: ViewDrawManager {
+struct RepositoryListViewControllerDrawManager {
     
     let disposeBag = DisposeBag()
     

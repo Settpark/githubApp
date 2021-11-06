@@ -8,7 +8,7 @@
 import Foundation
 import RxSwift
 
-final class Repository: RepositoryType {
+final class RepositoryLayer: RepositoryLayerType {
     private let apiService: APIServiceType
     
     init(apiService: APIServiceType) {
