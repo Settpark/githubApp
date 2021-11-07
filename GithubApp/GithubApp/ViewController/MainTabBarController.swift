@@ -22,17 +22,17 @@ final class MainTabBarController: UITabBarController {
         setTabBarItem()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
-    }
-    
     func setTabBarItem() -> Void {
         let tabOneBarItem = UITabBarItem(title: "Search", image: UIImage(systemName: "magnifyingglass.circle"), selectedImage: UIImage(systemName: "magnifyingglass.circle.fill"))
         let firstViewController = self.viewControllers?.first
         firstViewController?.tabBarItem = tabOneBarItem
         
-        let tabTwoBarItem2 = UITabBarItem(title: "Profile", image: UIImage(systemName: "person"), selectedImage: UIImage(systemName: "person.fill"))
+        let tabTwoBarItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person"), selectedImage: UIImage(systemName: "person.fill"))
         let secondViewController = self.viewControllers?[1]
-        secondViewController?.tabBarItem = tabTwoBarItem2
+        secondViewController?.tabBarItem = tabTwoBarItem
+        
+        self.tabBar.unselectedItemTintColor = .white
+        self.tabBar.tintColor = .white
+        self.tabBar.backgroundColor = .systemPink
     }
 }

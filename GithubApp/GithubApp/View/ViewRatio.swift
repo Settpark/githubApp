@@ -8,11 +8,12 @@
 import UIKit
 
 enum ViewRatio: CGFloat {
-    case topViewHeightRatio = 16
+    case topViewHeightRatio = 0.07
     case titleWidthRatio = 5
     case buttonWidthRatio = 6
     case buttonTrailingAnchor = -10
-    case textFieldWidthRatio = 0.65
-    case textFieldHeightRatio = 0.05
+    case searchFieldWidth = 0.65
+    case searchFieldHeight = 0.06
     case searchButtonWidth = 0.25
+    case iconSizeMultiplier = 0.05
 }
