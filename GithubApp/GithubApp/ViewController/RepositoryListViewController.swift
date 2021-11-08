@@ -15,9 +15,9 @@ final class RepositoryListViewController: UIViewController {
     private var listDataSource: RxTableViewSectionedReloadDataSource<RepositoryListSectionData>!
     private let viewModel: RepositoryListViewModel
     
-    private var searchButton: UIButton
-    private var listTableview: UITableView
-    private var searchField: UITextField
+    private let searchButton: UIButton
+    private let listTableview: UITableView
+    private let searchField: UITextField
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         self.disposeBag = DisposeBag()
@@ -56,6 +56,14 @@ final class RepositoryListViewController: UIViewController {
             .setDelegate(self)
             .disposed(by: self.disposeBag)
         initDataSource()
+        initSearchButton()
+    }
+    
+    func initSearchButton() {
+        self.searchButton.rx.tap
+            .bind { [weak self] _ in
+                self?.viewModel.input.onNext(self?.searchField.text ?? "")
+            }.disposed(by: self.disposeBag)
     }
 }
 
@@ -70,10 +78,9 @@ extension RepositoryListViewController {
                 return cell
             })
         
-        self.viewModel
-            .searchResult(path: .Repositories, query: "RxSwift")
-            .bind(to: self.listTableview.rx.items(dataSource: listDataSource))
-            .disposed(by: disposeBag)
+        self.viewModel.output
+            .bind(to: self.listTableview.rx.items(dataSource: self.listDataSource))
+            .disposed(by: self.disposeBag)
         
     }
 }

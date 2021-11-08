@@ -11,7 +11,6 @@ import RxSwift
 final class RepositoryListCell: UITableViewCell {
     
     static var cellIdentifier = "cell"
-    let disposebag = DisposeBag()
     
     private let customContentView: UIStackView
     private let topics: UIStackView
@@ -22,6 +21,7 @@ final class RepositoryListCell: UITableViewCell {
     private let starButton: UIButton
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        
         self.customContentView = UIStackView()
         self.customContentView.axis = .vertical
         self.customContentView.distribution = .equalSpacing
@@ -30,7 +30,7 @@ final class RepositoryListCell: UITableViewCell {
         
         self.topics = UIStackView()
         self.topics.axis = .horizontal
-        self.topics.distribution = .equalSpacing
+        self.topics.distribution = .fill
         self.topics.alignment = .leading
         self.topics.spacing = 5
         self.title = UIStackView()
@@ -47,7 +47,6 @@ final class RepositoryListCell: UITableViewCell {
         self.customDescription = UILabel()
         self.customDescription.numberOfLines = 2
         super.init(style: .default, reuseIdentifier: nil)
-        self.starButton.addTarget(self, action: #selector(abc), for: .allTouchEvents)
     }
     
     required init?(coder: NSCoder) {
@@ -78,12 +77,15 @@ final class RepositoryListCell: UITableViewCell {
         self.etc.subviews.forEach { view in
             view.removeFromSuperview()
         }
+        self.constraints.forEach { constraint in
+            removeConstraint(constraint)
+        }
     }
     
     func configureCell(with source: RepositoriesModel) {
         self.drawIcon()
         self.configureContentView()
-        self.drawTitle(source1: source.owner.login, source2: source.name)
+        self.drawTitle(source1: source.owner?.login, source2: source.name)
         self.drawDescription(source: source.description)
         self.drawTopics(source: source.topics)
         self.drawStarCount(source: source.stargazersCount)
@@ -111,36 +113,38 @@ final class RepositoryListCell: UITableViewCell {
         basicTopAnchor.isActive = true
     }
     
-    @objc func abc() {
-        print("aa")
-    }
-    
-    func drawTitle(source1 user: String, source2 name: String) {
+    func drawTitle(source1 user: String?, source2 name: String?) {
+        guard let existUser = user, let existName = name else {
+            return
+        }
         self.customContentView.addArrangedSubview(self.title)
         self.title.translatesAutoresizingMaskIntoConstraints = false
         let userLabel = UILabel()
-        userLabel.text = user + "/"
+        userLabel.text = existUser + "/"
         userLabel.font = .systemFont(ofSize: 14)
         userLabel.sizeToFit()
         userLabel.textAlignment = .left
         self.title.addArrangedSubview(userLabel)
         let nameLabel = UILabel()
-        nameLabel.text = name
+        nameLabel.text = existName
         nameLabel.font = .boldSystemFont(ofSize: 14)
         nameLabel.sizeToFit()
         userLabel.textAlignment = .left
         self.title.addArrangedSubview(nameLabel)
     }
     
-    func drawDescription(source: String) {
+    func drawDescription(source: String?) {
+        guard let des = source else {
+            return
+        }
         self.customContentView.addArrangedSubview(self.customDescription)
-        self.customDescription.text = source
+        self.customDescription.text = des
         self.customDescription.font = .systemFont(ofSize: 14)
         self.customDescription.sizeToFit()
         self.customDescription.textAlignment = .left
     }
     
-    func drawTopics(source: [String]?) {
+    func drawTopics(source: [String]?) {        
         if let topics = source {
             self.topics.translatesAutoresizingMaskIntoConstraints = false
             self.customContentView.addArrangedSubview(self.topics)
@@ -156,7 +160,10 @@ final class RepositoryListCell: UITableViewCell {
         }
     }
     
-    func drawStarCount(source: Int) {
+    func drawStarCount(source: Int?) {
+        guard let localStar = source else {
+            return
+        }
         self.customContentView.addArrangedSubview(self.etc)
         let starView = UIStackView()
         starView.axis = .horizontal
@@ -167,11 +174,11 @@ final class RepositoryListCell: UITableViewCell {
         starView.addArrangedSubview(starCount)
         self.etc.addArrangedSubview(starView)
         starCount.font = .systemFont(ofSize: 13)
-        if source >= 1000 {
-            let result = Float(source / 1000)
+        if localStar >= 1000 {
+            let result = Float(localStar / 1000)
             starCount.text = "\(result)k"
         } else {
-            starCount.text = "\(source)"
+            starCount.text = "\(localStar)"
         }
         starImage.tintColor = .systemPink
         starImage.translatesAutoresizingMaskIntoConstraints = false

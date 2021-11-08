@@ -10,13 +10,25 @@ import RxSwift
 
 class RepositoryListViewModel {
     
+    private let disposeBag: DisposeBag
     private let repository: RepositoryLayerType
+    let input: PublishSubject<String>
+    let output: PublishSubject<[RepositoryListSectionData]>
     
     init(repositoryLayer: RepositoryLayerType) {
         self.repository = repositoryLayer
+        self.disposeBag = DisposeBag()
+        self.input = PublishSubject<String>()
+        self.output = PublishSubject<[RepositoryListSectionData]>()
+        
+        input.flatMap { inputText in
+            self.searchRepositoryList(path: .Repositories, query: inputText)
+        }
+        .bind(to: output)
+        .disposed(by: self.disposeBag)
     }
     
-    func searchResult(path: Paths, query: String) -> Observable<[RepositoryListSectionData]> {
+    func searchRepositoryList(path: Paths, query: String) -> Observable<[RepositoryListSectionData]> {
         return repository.RepositoryList(path: path, query: query)
             .map { data in
                 let temp = [RepositoryListSectionData.init(items: data.items)]

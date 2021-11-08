@@ -20,6 +20,7 @@ struct APIService: APIServiceType {
     
     func requestData<T: Decodable>(type: T.Type, path: Paths, query: String) -> Observable<T> {
         let url = self.endPoint.createValidURL(path: path, query: query)
+        
         let request = URLRequest.init(url: url)
         return self.urlsession.rx.data(request: request)
             .flatMap { data in
