@@ -165,8 +165,8 @@
 		8290469B2735136F005FD0AB /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
-				8213F01627339FD300125B4C /* RepositoryListViewController.swift */,
 				8290469D273513DB005FD0AB /* MainTabBarController.swift */,
+				8213F01627339FD300125B4C /* RepositoryListViewController.swift */,
 				8290469F27351A56005FD0AB /* LoginViewController.swift */,
 			);
 			path = ViewController;
