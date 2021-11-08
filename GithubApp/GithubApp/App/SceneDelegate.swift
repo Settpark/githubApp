@@ -14,8 +14,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
+        let apiService = APIService(endPoint: EndPoint.init())
+        let repositoryLayer = RepositoryLayer(apiService: apiService)
+        let repositoriesViewModel = RepositoryListViewModel(repositoryLayer: repositoryLayer)
+        let loginViewModel = LoginViewModel(repositoryLayer: repositoryLayer)
+        let firstViewController = Scene.Repositories(repositoriesViewModel).instantiate()
+        let loginViewController = Scene.LoginView(loginViewModel).instantiate()
+        
         let rootVC = MainTabBarController()
-        rootVC.setViewControllers([RepositoryListViewController(), LoginViewController()], animated: true)
+        rootVC.setViewControllers([firstViewController, loginViewController], animated: true)
         
         window = UIWindow(windowScene: windowScene)
         window?.windowScene = windowScene

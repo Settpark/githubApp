@@ -9,11 +9,11 @@ import UIKit
 import RxSwift
 import RxDataSources
 
-final class RepositoryListViewController: UIViewController {
+final class RepositoryListViewController: UIViewController, ViewModelBindable {
     
+    var viewModel: RepositoryListViewModel!
     private var disposeBag: DisposeBag
     private var listDataSource: RxTableViewSectionedReloadDataSource<RepositoryListSectionData>!
-    private let viewModel: RepositoryListViewModel
     
     private let searchButton: UIButton
     private let listTableview: UITableView
@@ -21,7 +21,6 @@ final class RepositoryListViewController: UIViewController {
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         self.disposeBag = DisposeBag()
-        self.viewModel = RepositoryListViewModel(repositoryLayer: RepositoryLayer.init(apiService: APIService(endPoint: EndPoint.init())))
         self.listTableview = UITableView()
         self.searchButton = UIButton()
         self.searchField = UITextField()
@@ -30,7 +29,6 @@ final class RepositoryListViewController: UIViewController {
     
     required init?(coder: NSCoder) {
         self.disposeBag = DisposeBag()
-        self.viewModel = RepositoryListViewModel(repositoryLayer: RepositoryLayer.init(apiService: APIService(endPoint: EndPoint.init())))
         self.listTableview = UITableView()
         self.searchButton = UIButton()
         self.searchField = UITextField()
@@ -40,7 +38,6 @@ final class RepositoryListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        initTableview()
     }
     
     override func viewWillLayoutSubviews() {
@@ -55,8 +52,6 @@ final class RepositoryListViewController: UIViewController {
         self.listTableview.rx
             .setDelegate(self)
             .disposed(by: self.disposeBag)
-        initDataSource()
-        initSearchButton()
     }
     
     func initSearchButton() {
@@ -64,6 +59,12 @@ final class RepositoryListViewController: UIViewController {
             .bind { [weak self] _ in
                 self?.viewModel.input.onNext(self?.searchField.text ?? "")
             }.disposed(by: self.disposeBag)
+    }
+    
+    func bindViewModel() {
+        initTableview()
+        initDataSource()
+        initSearchButton()
     }
 }
 
@@ -81,7 +82,6 @@ extension RepositoryListViewController {
         self.viewModel.output
             .bind(to: self.listTableview.rx.items(dataSource: self.listDataSource))
             .disposed(by: self.disposeBag)
-        
     }
 }
 

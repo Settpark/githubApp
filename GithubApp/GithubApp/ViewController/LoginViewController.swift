@@ -7,9 +7,10 @@
 
 import UIKit
 
-final class LoginViewController: UIViewController {
+final class LoginViewController: UIViewController, ViewModelBindable {
     
     private let loginButton: UIButton
+    var viewModel: LoginViewModel!
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         self.loginButton = UIButton()
@@ -27,6 +28,10 @@ final class LoginViewController: UIViewController {
     override func viewWillLayoutSubviews() {
         self.view.backgroundColor = .white
         self.drawLoginView(currentState: false)
+    }
+    
+    func bindViewModel() {
+        
     }
 }
 

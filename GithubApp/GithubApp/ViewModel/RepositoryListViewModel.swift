@@ -21,7 +21,7 @@ class RepositoryListViewModel {
         self.input = PublishSubject<String>()
         self.output = PublishSubject<[RepositoryListSectionData]>()
         
-        input.flatMap { inputText in
+        input.flatMap { [unowned self] inputText in
             self.searchRepositoryList(path: .Repositories, query: inputText)
         }
         .bind(to: output)
