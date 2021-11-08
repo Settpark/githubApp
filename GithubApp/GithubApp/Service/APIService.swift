@@ -10,18 +10,30 @@ import RxCocoa
 import RxSwift
 
 struct APIService: APIServiceType {
-    private let endPoint: EndPoint
     private let urlsession: URLSession
     
-    init(endPoint: EndPoint) {
-        self.endPoint = endPoint
+    init() {
         self.urlsession = URLSession.shared
     }
     
     func requestData<T: Decodable>(type: T.Type, path: Paths, query: String) -> Observable<T> {
-        let url = self.endPoint.createValidURL(path: path, query: query)
+        let endPoint = EndPointRepositories()
+        let url = endPoint.createValidURL(path: path, query: query)
         
         let request = URLRequest.init(url: url)
+        return self.urlsession.rx.data(request: request)
+            .flatMap { data in
+                return self.decodedData(type: type, data: data)
+            }
+    }
+    
+    func requestAccessToken<T: Decodable>(type: T.Type, path: Paths, query: String) -> Observable<T> {
+        let endPoint = EndPointAccessToken()
+        let url = endPoint.createValidURL(path: path, query: query)
+        
+        var request = URLRequest.init(url: url)
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpMethod = "GET"
         return self.urlsession.rx.data(request: request)
             .flatMap { data in
                 return self.decodedData(type: type, data: data)

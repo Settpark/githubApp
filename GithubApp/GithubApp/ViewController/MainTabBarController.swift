@@ -26,14 +26,19 @@ final class MainTabBarController: UITabBarController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        
         setTabBarItem()
     }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        
         drawTopview(constraint: self.view)
+    }
+    
+    func sendAccessCode(url: URL) {
+        guard let loginViewController = self.viewControllers?[1] as? LoginViewController else {
+            return
+        }
+        loginViewController.requestUserRepo(url: url)
     }
 }
 

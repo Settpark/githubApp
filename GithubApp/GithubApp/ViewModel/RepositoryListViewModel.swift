@@ -29,7 +29,7 @@ class RepositoryListViewModel {
     }
     
     func searchRepositoryList(path: Paths, query: String) -> Observable<[RepositoryListSectionData]> {
-        return repository.RepositoryList(path: path, query: query)
+        return repository.requestRepositoryList(path: path, query: query)
             .map { data in
                 let temp = [RepositoryListSectionData.init(items: data.items)]
                 return temp

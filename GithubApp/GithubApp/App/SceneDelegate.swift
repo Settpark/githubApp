@@ -14,7 +14,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
-        let apiService = APIService(endPoint: EndPoint.init())
+        let apiService = APIService()
         let repositoryLayer = RepositoryLayer(apiService: apiService)
         let repositoriesViewModel = RepositoryListViewModel(repositoryLayer: repositoryLayer)
         let loginViewModel = LoginViewModel(repositoryLayer: repositoryLayer)
@@ -28,6 +28,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         window?.rootViewController = rootVC
         window?.makeKeyAndVisible()
+    }
+    
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        
+        if let url = URLContexts.first?.url {
+            guard let rootViewController = self.window?.rootViewController as? MainTabBarController else {
+                return
+            }
+            rootViewController.sendAccessCode(url: url)
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

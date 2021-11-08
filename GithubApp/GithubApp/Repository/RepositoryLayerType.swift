@@ -9,5 +9,5 @@ import Foundation
 import RxSwift
 
 protocol RepositoryLayerType {
-    func RepositoryList(path: Paths, query: String) -> Observable<SearchResult>
+    func requestRepositoryList(path: Paths, query: String) -> Observable<SearchResult>
 }

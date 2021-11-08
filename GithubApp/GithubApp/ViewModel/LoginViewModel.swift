@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RxSwift
 
 class LoginViewModel {
     
@@ -13,5 +14,9 @@ class LoginViewModel {
     
     init(repositoryLayer: RepositoryLayer) {
         self.repository = repositoryLayer
+    }
+    
+    func getAceessToken(path: Paths, query: String) -> Observable<AccessTokenModel> {
+        return repository.requestAccessToken(path: path, query: query)
     }
 }

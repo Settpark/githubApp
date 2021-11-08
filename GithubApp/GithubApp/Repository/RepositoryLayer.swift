@@ -15,7 +15,11 @@ final class RepositoryLayer: RepositoryLayerType {
         self.apiService = apiService
     }
     
-    func RepositoryList(path: Paths, query: String) -> Observable<SearchResult> {
+    func requestRepositoryList(path: Paths, query: String) -> Observable<SearchResult> {
         return apiService.requestData(type: SearchResult.self, path: path, query: query)
+    }
+    
+    func requestAccessToken(path: Paths, query: String) -> Observable<AccessTokenModel> {
+        return apiService.requestAccessToken(type: AccessTokenModel.self, path: path, query: query)
     }
 }

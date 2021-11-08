@@ -10,4 +10,5 @@ import RxSwift
 
 protocol APIServiceType {
     func requestData<T: Decodable>(type: T.Type, path: Paths, query: String) -> Observable<T>
+    func requestAccessToken<T: Decodable>(type: T.Type, path: Paths, query: String) -> Observable<T>
 }

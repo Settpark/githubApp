@@ -6,13 +6,16 @@
 //
 
 import UIKit
+import RxSwift
 
 final class LoginViewController: UIViewController, ViewModelBindable {
     
+    private let disposeBag: DisposeBag
     private let loginButton: UIButton
     var viewModel: LoginViewModel!
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        self.disposeBag = DisposeBag()
         self.loginButton = UIButton()
         super.init(nibName: nil, bundle: nil)
     }
@@ -31,7 +34,25 @@ final class LoginViewController: UIViewController, ViewModelBindable {
     }
     
     func bindViewModel() {
+        initLoginButton()
+    }
+    
+    func initLoginButton() {
+        let endpoint = EndPointAuthorization.init()
+        self.loginButton.rx.tap
+            .bind {
+                let url = endpoint.createValidURL(path: .LoginPath, query: nil)
+                UIApplication.shared.open(url)
+            }.disposed(by: self.disposeBag)
+    }
+    
+    func requestUserRepo(url: URL) {
+        let code = url.absoluteString.components(separatedBy: "code=").last ?? ""
         
+        self.viewModel.getAceessToken(path: .AccessToken, query: code)
+            .subscribe {
+            print($0)
+        }
     }
 }
 
