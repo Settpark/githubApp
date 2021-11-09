@@ -33,11 +33,30 @@ struct APIService: APIServiceType {
         
         var request = URLRequest.init(url: url)
         request.addValue("application/json", forHTTPHeaderField: "Accept")
-        request.httpMethod = "GET"
+        request.httpMethod = "POST"
         return self.urlsession.rx.data(request: request)
             .flatMap { data in
                 return self.decodedData(type: type, data: data)
             }
+    }
+    
+    func requestUserData<T: Decodable>(type: T.Type, path: Paths, token: String) -> Observable<T> {
+        let endPoint = EndPointUserRepo()
+        let url = endPoint.createValidURL(path: path, query: nil)
+
+        var request = URLRequest.init(url: url)
+        request.addValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
+        request.addValue("token \(token)", forHTTPHeaderField: "Authorization")
+        return self.urlsession.rx.data(request: request)
+            .flatMap { data in
+                return self.decodedData(type: type, data: data)
+            }
+    }
+    
+    func getfetchedImage(url: String) -> Observable<Data> {
+        let validURL = URL(string: url)!
+        let request = URLRequest.init(url: validURL)
+        return self.urlsession.rx.data(request: request)
     }
     
     func decodedData<T: Decodable>(type: T.Type, data: Data) -> Observable<T> {

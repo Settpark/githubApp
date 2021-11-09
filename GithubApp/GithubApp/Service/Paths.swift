@@ -11,4 +11,6 @@ enum Paths: String {
     case Repositories = "/search/repositories"
     case LoginPath = "/login/oauth/authorize"
     case AccessToken = "/login/oauth/access_token"
+    case user = "/user"
+    case userRepo = "/user/repos"
 }

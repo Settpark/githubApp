@@ -9,7 +9,6 @@ import Foundation
 import RxDataSources
 
 struct RepositoryListSectionData {
-//  var header: String
   var items: [Item]
 }
 

@@ -38,7 +38,7 @@ final class MainTabBarController: UITabBarController {
         guard let loginViewController = self.viewControllers?[1] as? LoginViewController else {
             return
         }
-        loginViewController.requestUserRepo(url: url)
+        loginViewController.requestAccessToken(url: url)
     }
 }
 
@@ -94,5 +94,12 @@ extension MainTabBarController {
             return
         }
         firstViewController.drawSearchfield(constraint: self.titleView)
+    }
+    
+    func drawUserInfoTopview() {
+        guard let secondViewController = self.selectedViewController as? LoginViewController else {
+            return
+        }
+        secondViewController.drawUserinfoView(constraint: self.titleView)
     }
 }

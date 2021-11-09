@@ -6,17 +6,58 @@
 //
 
 import Foundation
+import RxCocoa
 import RxSwift
 
 class LoginViewModel {
     
-    private let repository: RepositoryLayer
+    private let repository: RepositoryLayerType
+    private let disposeBag: DisposeBag
+    let outputUserinfo: PublishSubject<UserModelDTO>
+    let inputToken: PublishSubject<AccessTokenModel>
+    let outputUserRepo: PublishSubject<[RepositoryListSectionData]>
+    let outputIslogin: BehaviorRelay<Bool>
     
-    init(repositoryLayer: RepositoryLayer) {
+    init(repositoryLayer: RepositoryLayerType) {
         self.repository = repositoryLayer
+        self.disposeBag = DisposeBag()
+        self.outputUserinfo = PublishSubject<UserModelDTO>()
+        self.inputToken = PublishSubject<AccessTokenModel>()
+        self.outputUserRepo = PublishSubject<[RepositoryListSectionData]>()
+        self.outputIslogin = BehaviorRelay<Bool>(value: false)
+
+        self.inputToken
+            .flatMap { token in
+                return self.requestUserData(path: .user, token: token.accessToken ?? "")
+            }.bind(to: outputUserinfo)
+            .disposed(by: self.disposeBag)
+        
+        self.inputToken
+            .flatMap { token in
+                return self.requestUserRepos(path: .userRepo, token: token.accessToken ?? "")
+            }
+            .do(onDispose: { self.outputIslogin.accept(true) })
+            .bind(to: outputUserRepo)
+            .disposed(by: self.disposeBag)
     }
     
     func getAceessToken(path: Paths, query: String) -> Observable<AccessTokenModel> {
         return repository.requestAccessToken(path: path, query: query)
+    }
+    
+    func requestUserData(path: Paths, token: String) -> Observable<UserModelDTO> {
+        return repository.requestUserData(type: UserModelDTO.self, path: path, token: token)
+    }
+    
+    func requestUserRepos(path: Paths, token: String) -> Observable<[RepositoryListSectionData]> {
+        return repository.requestUserData(type: [RepositoriesModel].self, path: path, token: token)
+            .map { data in
+                let temp = [RepositoryListSectionData.init(items: data)]
+                return temp
+            }
+    }
+    
+    func requestUserimage(url: String) -> Observable<Data> {
+        return repository.requestUserimage(url: url)
     }
 }

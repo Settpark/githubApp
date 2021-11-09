@@ -22,4 +22,12 @@ final class RepositoryLayer: RepositoryLayerType {
     func requestAccessToken(path: Paths, query: String) -> Observable<AccessTokenModel> {
         return apiService.requestAccessToken(type: AccessTokenModel.self, path: path, query: query)
     }
+    
+    func requestUserData<T: Decodable>(type: T.Type, path: Paths, token: String) -> Observable<T> {
+        return apiService.requestUserData(type: type.self, path: path, token: token)
+    }
+    
+    func requestUserimage(url: String) -> Observable<Data> {
+        return apiService.getfetchedImage(url: url)
+    }
 }

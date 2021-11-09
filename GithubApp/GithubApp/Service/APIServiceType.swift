@@ -11,4 +11,6 @@ import RxSwift
 protocol APIServiceType {
     func requestData<T: Decodable>(type: T.Type, path: Paths, query: String) -> Observable<T>
     func requestAccessToken<T: Decodable>(type: T.Type, path: Paths, query: String) -> Observable<T>
+    func requestUserData<T: Decodable>(type: T.Type, path: Paths, token: String) -> Observable<T>
+    func getfetchedImage(url: String) -> Observable<Data>
 }
