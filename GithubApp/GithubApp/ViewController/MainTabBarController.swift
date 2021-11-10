@@ -48,6 +48,8 @@ final class MainTabBarController: UITabBarController {
               }
         if repoViewController.loginDelegate == nil {
             repoViewController.loginDelegate = loginViewController
+            repoViewController.initLoginToken()
+            repoViewController.initLoginButton()
         }
     }
 }

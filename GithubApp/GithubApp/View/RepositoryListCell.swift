@@ -12,6 +12,7 @@ final class RepositoryListCell: UITableViewCell {
     
     static var cellIdentifier = "cell"
     
+    private let disposeBag: DisposeBag
     private let customContentView: UIStackView
     private let topics: UIStackView
     private let etc: UIStackView
@@ -19,8 +20,10 @@ final class RepositoryListCell: UITableViewCell {
     private var title: UIStackView
     private let customDescription: UILabel
     private let starButton: UIButton
+    private weak var delegate: StarButtonDelegate?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        self.disposeBag = DisposeBag()
         
         self.customContentView = UIStackView()
         self.customContentView.axis = .vertical
@@ -50,6 +53,8 @@ final class RepositoryListCell: UITableViewCell {
     }
     
     required init?(coder: NSCoder) {
+        self.disposeBag = DisposeBag()
+        
         self.customContentView = UIStackView()
         self.customContentView.axis = .vertical
         self.topics = UIStackView()
@@ -82,7 +87,7 @@ final class RepositoryListCell: UITableViewCell {
         }
     }
     
-    func configureCell(with source: RepositoriesModel) {
+    func configureCell(with source: RepositoriesModel, buttonDelegate: StarButtonDelegate) {
         self.drawIcon()
         self.configureContentView()
         self.drawTitle(source1: source.owner?.login, source2: source.name)
@@ -90,6 +95,14 @@ final class RepositoryListCell: UITableViewCell {
         self.drawTopics(source: source.topics)
         self.drawStarCount(source: source.stargazersCount)
         self.drawStarButton(constraint: self)
+        self.delegate = buttonDelegate
+        self.starButton.rx.tap
+            .bind {
+                guard let ownerInfo = source.owner?.login, let repoName = source.name else {
+                    return
+                }
+                self.delegate?.starRepository(owner: ownerInfo, repo: repoName)
+            }.disposed(by: self.disposeBag)
     }
     
     func drawIcon() {

@@ -13,6 +13,8 @@ class RepositoryListViewModel {
     private let repository: RepositoryLayerType
     private let disposeBag: DisposeBag
     private var currentPage: Int
+    private var userToken: AccessTokenModel?
+    let inputToken: PublishSubject<AccessTokenModel>
     let input: PublishSubject<[URLQueryItem]>
     let output: PublishSubject<[RepositoryListSectionData]>
     
@@ -20,6 +22,8 @@ class RepositoryListViewModel {
         self.repository = repositoryLayer
         self.disposeBag = DisposeBag()
         self.currentPage = 0
+        self.userToken = nil
+        self.inputToken = PublishSubject<AccessTokenModel>()
         self.input = PublishSubject<[URLQueryItem]>()
         self.output = PublishSubject<[RepositoryListSectionData]>()
         
@@ -32,6 +36,12 @@ class RepositoryListViewModel {
         }
         .bind(to: output)
         .disposed(by: self.disposeBag)
+        
+        inputToken
+            .subscribe() {
+                self.userToken = $0
+            }
+            .disposed(by: self.disposeBag)
     }
     
     func searchRepositoryList(path: Paths, query: [URLQueryItem]) -> Observable<[RepositoryListSectionData]> {
@@ -40,6 +50,20 @@ class RepositoryListViewModel {
                 let temp = [RepositoryListSectionData.init(items: data)]
                 return temp
             }
+    }
+    
+    func starUserRepo(path: Paths, query: [URLQueryItem]) {
+        
+        guard let accessToken = userToken?.accessToken else {
+            return
+        }
+        let tempToken = URLQueryItem(name: "token", value: accessToken)
+        var tempQuery = query
+        tempQuery.append(tempToken)
+        
+        repository.starUserrepo(path: path, query: tempQuery)
+            .subscribe{ _ in }
+            .disposed(by: self.disposeBag)
     }
     
     func setCurretpage(value: Int) {

@@ -12,5 +12,6 @@ protocol APIServiceType {
     func requestData<T: Decodable>(type: T.Type, path: Paths, query: [URLQueryItem]) -> Observable<T>
     func requestAccessToken<T: Decodable>(type: T.Type, path: Paths, query: [URLQueryItem]) -> Observable<T>
     func requestUserData<T: Decodable>(type: T.Type, path: Paths, token: [URLQueryItem]) -> Observable<T>
+    func starUserrepo(path: Paths, token: [URLQueryItem]) -> Observable<(response: HTTPURLResponse, data: Data)>
     func getfetchedImage(url: String) -> Observable<Data>
 }

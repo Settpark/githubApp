@@ -12,6 +12,7 @@ import RxDataSources
 
 final class LoginViewController: UIViewController, ViewModelBindable, LoginDelegate {
     
+    
     private let disposeBag: DisposeBag
     
     private let titleView: UIView
@@ -27,6 +28,7 @@ final class LoginViewController: UIViewController, ViewModelBindable, LoginDeleg
     
     var viewModel: LoginViewModel!
     var isLogin: BehaviorRelay<Bool>
+    var loginToken: PublishSubject<AccessTokenModel>
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         self.disposeBag = DisposeBag()
@@ -43,6 +45,7 @@ final class LoginViewController: UIViewController, ViewModelBindable, LoginDeleg
         self.userName = UILabel()
         self.userRepositoriesList = UITableView()
         self.isLogin = BehaviorRelay<Bool>(value: false)
+        self.loginToken = PublishSubject<AccessTokenModel>()
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -87,7 +90,9 @@ final class LoginViewController: UIViewController, ViewModelBindable, LoginDeleg
         let code = url.absoluteString.components(separatedBy: "code=").last ?? ""
         let accessCode = URLQueryItem.init(name: "code", value: code)
         self.viewModel.getAceessToken(path: .AccessToken, query: [accessCode])
-            .bind(to: self.viewModel.inputToken)
+            .bind {
+                self.loginToken.onNext($0)
+            }
             .disposed(by: self.disposeBag)
     }
     
@@ -112,6 +117,12 @@ final class LoginViewController: UIViewController, ViewModelBindable, LoginDeleg
             .bind {
                 self.userImage.image = UIImage(data: $0)
             }.disposed(by: self.disposeBag)
+        
+        self.loginToken
+            .bind {
+                self.viewModel.inputToken.onNext($0)
+            }
+            .disposed(by: self.disposeBag)
     }
     
     func initTableview() {
@@ -255,12 +266,23 @@ extension LoginViewController {
             guard let cell: RepositoryListCell = tableView.dequeueReusableCell(withIdentifier: RepositoryListCell.cellIdentifier, for: indexPath) as? RepositoryListCell else {
                 return UITableViewCell()
             }
-            cell.configureCell(with: item)
+            cell.configureCell(with: item, buttonDelegate: self)
             return cell
         })
         
         self.viewModel.outputUserRepo
             .bind(to: self.userRepositoriesList.rx.items(dataSource: self.listDataSource))
             .disposed(by: self.disposeBag)
+    }
+}
+
+extension LoginViewController: StarButtonDelegate {    
+    func starRepository(owner: String, repo: String) {
+        if !self.isLogin.value {
+            return
+        }
+        let userName = URLQueryItem(name: "owner", value: owner)
+        let userRepo = URLQueryItem(name: "repo", value: repo)
+        self.viewModel.starUserRepo(path: .star, query: [userName, userRepo])
     }
 }

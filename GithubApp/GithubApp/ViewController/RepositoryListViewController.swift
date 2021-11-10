@@ -58,7 +58,7 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
         self.drawSearchfield(constraint: self.titleView)
         self.drawSearchbutton(constraint: self.searchField)
         self.drawTableview(constraint: self.searchField)
-        self.testitleView()
+        self.changeTitleView()
     }
     
     func initTableview() {
@@ -84,7 +84,14 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
             }.disposed(by: disposeBag)
     }
     
-    func testitleView() {
+    func initLoginToken() {
+        self.loginDelegate?.loginToken
+            .bind{ self.viewModel.inputToken.onNext($0)
+            }
+            .disposed(by: self.disposeBag)
+    }
+    
+    func changeTitleView() {
         self.loginDelegate?.isLogin.bind { [weak self] islogin in
             if !islogin {
                 self?.titleLoginButton.setTitle("로그인", for: .normal)
@@ -98,7 +105,6 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
         initTableview()
         initDataSource()
         initSearchButton()
-        initLoginButton()
     }
 }
 
@@ -109,7 +115,7 @@ extension RepositoryListViewController {
                 guard let cell: RepositoryListCell = tableView.dequeueReusableCell(withIdentifier: RepositoryListCell.cellIdentifier, for: indexPath) as? RepositoryListCell else {
                     return UITableViewCell()
                 }
-                cell.configureCell(with: item)
+                cell.configureCell(with: item, buttonDelegate: self)
                 return cell
             })
         
@@ -127,10 +133,21 @@ extension RepositoryListViewController: UITableViewDelegate {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         let contentOffsetY = scrollView.contentOffset.y
         let tableViewContentSize = listTableview.contentSize.height
-                
+        
         if contentOffsetY > tableViewContentSize - scrollView.frame.height {
             self.viewModel.input.onNext([URLQueryItem(name: "q", value: self.searchField.text)])
         }
+    }
+}
+
+extension RepositoryListViewController: StarButtonDelegate {
+    func starRepository(owner: String, repo: String) {
+        if !(self.loginDelegate?.isLogin.value ?? false) {
+            return
+        }
+        let userName = URLQueryItem(name: "owner", value: owner)
+        let userRepo = URLQueryItem(name: "repo", value: repo)
+        self.viewModel.starUserRepo(path: .star, query: [userName, userRepo])
     }
 }
 

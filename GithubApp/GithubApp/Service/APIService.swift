@@ -27,13 +27,27 @@ struct APIService: APIServiceType {
             }
     }
     
+    func starUserrepo(path: Paths, token: [URLQueryItem]) -> Observable<(response: HTTPURLResponse, data: Data)> {
+        let endPoint = StarEndPoint.init()
+        let url = endPoint.createValidURL(path: .star, query: token)
+
+        var request = URLRequest.init(url: url)
+        request.httpMethod = HttpMethod.put.rawValue
+        request.addValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
+        if let validToken = token[2].value {
+            let tokenAddHeader = token[2].name + " " + validToken
+            request.addValue(tokenAddHeader, forHTTPHeaderField: "Authorization")
+        }
+        return self.urlsession.rx.response(request: request)
+    }
+    
     func requestAccessToken<T: Decodable>(type: T.Type, path: Paths, query: [URLQueryItem]) -> Observable<T> {
         let endPoint = EndPointAccessToken()
         let url = endPoint.createValidURL(path: path, query: query)
         
         var request = URLRequest.init(url: url)
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-        request.httpMethod = "POST"
+        request.addValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
+        request.httpMethod = HttpMethod.post.rawValue
         return self.urlsession.rx.data(request: request)
             .flatMap { data in
                 return self.decodedData(type: type, data: data)

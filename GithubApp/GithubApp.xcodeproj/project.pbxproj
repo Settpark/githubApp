@@ -36,6 +36,9 @@
 		829ED0D3273AA641001D399B /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829ED0D2273AA641001D399B /* UserModel.swift */; };
 		82ACC65827363C3700AAE27A /* RepositorySectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82ACC65727363C3700AAE27A /* RepositorySectionModel.swift */; };
 		82ACC65B2736506800AAE27A /* RepositoryListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82ACC65A2736506800AAE27A /* RepositoryListViewModel.swift */; };
+		82CAF891273BF57200ED4A84 /* StarButtonDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CAF890273BF57200ED4A84 /* StarButtonDelegate.swift */; };
+		82CAF893273BF66000ED4A84 /* HttpMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CAF892273BF66000ED4A84 /* HttpMethod.swift */; };
+		82CAF895273BF89700ED4A84 /* StarEndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CAF894273BF89700ED4A84 /* StarEndPoint.swift */; };
 		82D52F3F27399337005A710D /* AccessTokenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D52F3E27399337005A710D /* AccessTokenModel.swift */; };
 		82D52F42273995FD005A710D /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D52F41273995FD005A710D /* Client.swift */; };
 		82D52F4427399F75005A710D /* EndPointUserRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D52F4327399F75005A710D /* EndPointUserRepo.swift */; };
@@ -77,6 +80,9 @@
 		829ED0D2273AA641001D399B /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		82ACC65727363C3700AAE27A /* RepositorySectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositorySectionModel.swift; sourceTree = "<group>"; };
 		82ACC65A2736506800AAE27A /* RepositoryListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryListViewModel.swift; sourceTree = "<group>"; };
+		82CAF890273BF57200ED4A84 /* StarButtonDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarButtonDelegate.swift; sourceTree = "<group>"; };
+		82CAF892273BF66000ED4A84 /* HttpMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpMethod.swift; sourceTree = "<group>"; };
+		82CAF894273BF89700ED4A84 /* StarEndPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarEndPoint.swift; sourceTree = "<group>"; };
 		82D52F3E27399337005A710D /* AccessTokenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenModel.swift; sourceTree = "<group>"; };
 		82D52F41273995FD005A710D /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
 		82D52F4327399F75005A710D /* EndPointUserRepo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPointUserRepo.swift; sourceTree = "<group>"; };
@@ -176,6 +182,8 @@
 				8282A40F27394FE2004B7D17 /* EndPointAccessToken.swift */,
 				8282A41127395037004B7D17 /* EndPointManager.swift */,
 				82D52F41273995FD005A710D /* Client.swift */,
+				82CAF892273BF66000ED4A84 /* HttpMethod.swift */,
+				82CAF894273BF89700ED4A84 /* StarEndPoint.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -194,6 +202,7 @@
 			children = (
 				829287662735A89A00DA4077 /* ViewRatio.swift */,
 				829287682735B41200DA4077 /* RepositoryListCell.swift */,
+				82CAF890273BF57200ED4A84 /* StarButtonDelegate.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -354,6 +363,8 @@
 				8282A41027394FE2004B7D17 /* EndPointAccessToken.swift in Sources */,
 				8213F01727339FD300125B4C /* RepositoryListViewController.swift in Sources */,
 				8290468D2734E584005FD0AB /* RepositoryLayerType.swift in Sources */,
+				82CAF893273BF66000ED4A84 /* HttpMethod.swift in Sources */,
+				82CAF891273BF57200ED4A84 /* StarButtonDelegate.swift in Sources */,
 				82D52F462739A36B005A710D /* UserModelDTO.swift in Sources */,
 				82ACC65827363C3700AAE27A /* RepositorySectionModel.swift in Sources */,
 				82ACC65B2736506800AAE27A /* RepositoryListViewModel.swift in Sources */,
@@ -368,6 +379,7 @@
 				829287692735B41200DA4077 /* RepositoryListCell.swift in Sources */,
 				8213F01527339FD300125B4C /* SceneDelegate.swift in Sources */,
 				82D52F3F27399337005A710D /* AccessTokenModel.swift in Sources */,
+				82CAF895273BF89700ED4A84 /* StarEndPoint.swift in Sources */,
 				82994C98273923EE00BDB313 /* Scene.swift in Sources */,
 				82D52F42273995FD005A710D /* Client.swift in Sources */,
 				8281BA852734171C006D68C5 /* Paths.swift in Sources */,

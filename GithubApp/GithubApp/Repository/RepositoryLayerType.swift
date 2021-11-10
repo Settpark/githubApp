@@ -13,5 +13,6 @@ protocol RepositoryLayerType {
     func requestAccessToken(path: Paths, query: [URLQueryItem]) -> Observable<AccessTokenModel>
     func requestUserData<T: Decodable>(type: T.Type, path: Paths, token: [URLQueryItem]) -> Observable<T>
     func requestUserimage(url: String) -> Observable<Data>
+    func starUserrepo(path: Paths, query: [URLQueryItem]) -> Observable<Void>
     func clearRepositories()
 }

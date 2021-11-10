@@ -16,6 +16,7 @@ class LoginViewModel {
     let outputUserinfo: PublishSubject<UserModelDTO>
     let inputToken: PublishSubject<AccessTokenModel>
     let outputUserRepo: PublishSubject<[RepositoryListSectionData]>
+    var userToken: AccessTokenModel?
     
     init(repositoryLayer: RepositoryLayerType) {
         self.repository = repositoryLayer
@@ -23,16 +24,19 @@ class LoginViewModel {
         self.outputUserinfo = PublishSubject<UserModelDTO>()
         self.inputToken = PublishSubject<AccessTokenModel>()
         self.outputUserRepo = PublishSubject<[RepositoryListSectionData]>()
+        self.userToken = nil
 
         self.inputToken
             .flatMap { token -> Observable<UserModelDTO> in
+                self.userToken = token
                 let token = URLQueryItem.init(name: "token", value: token.accessToken)
                 return self.requestUserData(path: .user, token: [token])
             }.bind(to: outputUserinfo)
             .disposed(by: self.disposeBag)
-//
+        
         self.inputToken
             .flatMap { token -> Observable<[RepositoryListSectionData]> in
+                self.userToken = token
                 let token = URLQueryItem.init(name: "token", value: token.accessToken)
                 return self.requestUserRepos(path: .userRepo, token: [token])
             }.bind(to: outputUserRepo)
@@ -53,6 +57,19 @@ class LoginViewModel {
                 let temp = [RepositoryListSectionData.init(items: data)]
                 return temp
             }
+    }
+    
+    func starUserRepo(path: Paths, query: [URLQueryItem]) {
+        guard let accessToken = userToken?.accessToken else {
+            return
+        }
+        let tempToken = URLQueryItem(name: "token", value: accessToken)
+        var tempQuery = query
+        tempQuery.append(tempToken)
+        
+        repository.starUserrepo(path: path, query: tempQuery)
+            .subscribe{ _ in }
+            .disposed(by: self.disposeBag)
     }
     
     func requestUserimage(url: String) -> Observable<Data> {

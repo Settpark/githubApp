@@ -11,4 +11,10 @@ struct AccessTokenModel: Decodable {
     let accessToken: String?
     let scope: String?
     let tokenType: String?
+    
+    init() {
+        self.accessToken = nil
+        self.scope = nil
+        self.tokenType = nil
+    }
 }

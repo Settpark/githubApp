@@ -26,6 +26,11 @@ final class RepositoryLayer: RepositoryLayerType {
             }
     }
     
+    func starUserrepo(path: Paths, query: [URLQueryItem]) -> Observable<Void> {
+        return apiService.starUserrepo(path: path, token: query)
+            .map { _ in }
+    }
+    
     func requestAccessToken(path: Paths, query: [URLQueryItem]) -> Observable<AccessTokenModel> {
         return apiService.requestAccessToken(type: AccessTokenModel.self, path: path, query: query)
     }
