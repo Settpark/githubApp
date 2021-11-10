@@ -16,7 +16,7 @@ struct APIService: APIServiceType {
         self.urlsession = URLSession.shared
     }
     
-    func requestData<T: Decodable>(type: T.Type, path: Paths, query: String) -> Observable<T> {
+    func requestData<T: Decodable>(type: T.Type, path: Paths, query: [URLQueryItem]) -> Observable<T> {
         let endPoint = EndPointRepositories()
         let url = endPoint.createValidURL(path: path, query: query)
         
@@ -27,7 +27,7 @@ struct APIService: APIServiceType {
             }
     }
     
-    func requestAccessToken<T: Decodable>(type: T.Type, path: Paths, query: String) -> Observable<T> {
+    func requestAccessToken<T: Decodable>(type: T.Type, path: Paths, query: [URLQueryItem]) -> Observable<T> {
         let endPoint = EndPointAccessToken()
         let url = endPoint.createValidURL(path: path, query: query)
         
@@ -40,13 +40,16 @@ struct APIService: APIServiceType {
             }
     }
     
-    func requestUserData<T: Decodable>(type: T.Type, path: Paths, token: String) -> Observable<T> {
+    func requestUserData<T: Decodable>(type: T.Type, path: Paths, token: [URLQueryItem]) -> Observable<T> {
         let endPoint = EndPointUserRepo()
-        let url = endPoint.createValidURL(path: path, query: nil)
+        let url = endPoint.createValidURL(path: path, query: token)
 
         var request = URLRequest.init(url: url)
         request.addValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
-        request.addValue("token \(token)", forHTTPHeaderField: "Authorization")
+        if let validToken = token.first, let validTokenvalue = token.first?.value {
+            let tokenAddHeader = validToken.name + " " + validTokenvalue
+            request.addValue(tokenAddHeader, forHTTPHeaderField: "Authorization")
+        }
         return self.urlsession.rx.data(request: request)
             .flatMap { data in
                 return self.decodedData(type: type, data: data)

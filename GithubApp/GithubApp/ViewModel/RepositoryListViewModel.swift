@@ -12,13 +12,13 @@ class RepositoryListViewModel {
     
     private let disposeBag: DisposeBag
     private let repository: RepositoryLayerType
-    let input: PublishSubject<String>
+    let input: PublishSubject<[URLQueryItem]>
     let output: PublishSubject<[RepositoryListSectionData]>
     
     init(repositoryLayer: RepositoryLayerType) {
         self.repository = repositoryLayer
         self.disposeBag = DisposeBag()
-        self.input = PublishSubject<String>()
+        self.input = PublishSubject<[URLQueryItem]>()
         self.output = PublishSubject<[RepositoryListSectionData]>()
         
         input.flatMap { [unowned self] inputText in
@@ -28,7 +28,7 @@ class RepositoryListViewModel {
         .disposed(by: self.disposeBag)
     }
     
-    func searchRepositoryList(path: Paths, query: String) -> Observable<[RepositoryListSectionData]> {
+    func searchRepositoryList(path: Paths, query: [URLQueryItem]) -> Observable<[RepositoryListSectionData]> {
         return repository.requestRepositoryList(path: path, query: query)
             .map { data in
                 let temp = [RepositoryListSectionData.init(items: data.items)]

@@ -71,7 +71,7 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
     func initSearchButton() {
         self.searchButton.rx.tap
             .bind { [weak self] _ in
-                self?.viewModel.input.onNext(self?.searchField.text ?? "")
+                self?.viewModel.input.onNext([URLQueryItem(name: "q", value: self?.searchField.text)])
             }.disposed(by: self.disposeBag)
     }
     

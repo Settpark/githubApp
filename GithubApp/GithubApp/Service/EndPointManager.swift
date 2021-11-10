@@ -13,5 +13,5 @@ protocol EndPointManager {
     
     init()
     
-    func createValidURL(path: Paths, query: String?) -> URL
+    func createValidURL(path: Paths, query: [URLQueryItem]) -> URL
 }

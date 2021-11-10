@@ -16,7 +16,7 @@ struct EndPointUserRepo: EndPointManager {
         self.host = .api
     }
     
-    func createValidURL(path: Paths, query: String?) -> URL {
+    func createValidURL(path: Paths, query: [URLQueryItem]) -> URL {
         var urlComponents = URLComponents()
         urlComponents.scheme = self.scheme
         urlComponents.host = self.host.rawValue

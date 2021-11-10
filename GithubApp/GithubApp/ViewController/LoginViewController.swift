@@ -63,7 +63,7 @@ final class LoginViewController: UIViewController, ViewModelBindable, LoginDeleg
     
     func Login() {
         let endpoint = EndPointAuthorization.init()
-        let url = endpoint.createValidURL(path: .LoginPath, query: nil)
+        let url = endpoint.createValidURL(path: .LoginPath, query: [])
         UIApplication.shared.open(url)
         self.isLogin.accept(true)
     }
@@ -85,7 +85,8 @@ final class LoginViewController: UIViewController, ViewModelBindable, LoginDeleg
     
     func requestAccessToken(url: URL) -> Void {
         let code = url.absoluteString.components(separatedBy: "code=").last ?? ""
-        self.viewModel.getAceessToken(path: .AccessToken, query: code)
+        let accessCode = URLQueryItem.init(name: "code", value: code)
+        self.viewModel.getAceessToken(path: .AccessToken, query: [accessCode])
             .bind(to: self.viewModel.inputToken)
             .disposed(by: self.disposeBag)
     }

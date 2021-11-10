@@ -9,8 +9,8 @@ import Foundation
 import RxSwift
 
 protocol APIServiceType {
-    func requestData<T: Decodable>(type: T.Type, path: Paths, query: String) -> Observable<T>
-    func requestAccessToken<T: Decodable>(type: T.Type, path: Paths, query: String) -> Observable<T>
-    func requestUserData<T: Decodable>(type: T.Type, path: Paths, token: String) -> Observable<T>
+    func requestData<T: Decodable>(type: T.Type, path: Paths, query: [URLQueryItem]) -> Observable<T>
+    func requestAccessToken<T: Decodable>(type: T.Type, path: Paths, query: [URLQueryItem]) -> Observable<T>
+    func requestUserData<T: Decodable>(type: T.Type, path: Paths, token: [URLQueryItem]) -> Observable<T>
     func getfetchedImage(url: String) -> Observable<Data>
 }

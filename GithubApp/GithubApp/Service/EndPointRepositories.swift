@@ -16,12 +16,13 @@ struct EndPointRepositories: EndPointManager {
         self.host = EndPoints.api
     }
     
-    func createValidURL(path: Paths, query: String?) -> URL {
+    func createValidURL(path: Paths, query: [URLQueryItem]) -> URL {
         var urlComponents = URLComponents()
         urlComponents.scheme = self.scheme
         urlComponents.host = self.host.rawValue
         urlComponents.path = path.rawValue
-        urlComponents.query = "q=" + (query ?? "")
+        urlComponents.queryItems = query
+        urlComponents.queryItems?.append(URLQueryItem.init(name: "per_page", value: "\(10)"))
         
         guard let url = urlComponents.url else {
             fatalError("The Requested URL Cannot be Found")

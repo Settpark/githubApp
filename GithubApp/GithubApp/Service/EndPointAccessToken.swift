@@ -17,7 +17,7 @@ struct EndPointAccessToken: EndPointManager {
         self.host = .loginAuthorization
     }
     
-    func createValidURL(path: Paths, query: String?) -> URL {
+    func createValidURL(path: Paths, query: [URLQueryItem]) -> URL {
         var urlComponents = URLComponents()
         urlComponents.scheme = self.scheme
         urlComponents.host = self.host.rawValue
@@ -29,7 +29,7 @@ struct EndPointAccessToken: EndPointManager {
         urlComponents.queryItems = [
             URLQueryItem(name: "client_id", value: clientID.rawValue),
             URLQueryItem(name: "client_secret", value: client_secret.rawValue),
-            URLQueryItem(name: "code", value: query),
+            URLQueryItem(name: "code", value: query.first?.value),
         ]
         
         return urlComponents.url!

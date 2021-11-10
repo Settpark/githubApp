@@ -17,7 +17,7 @@ struct EndPointAuthorization: EndPointManager {
         self.host = EndPoints.loginAuthorization
     }
     
-    func createValidURL(path: Paths, query: String?) -> URL {
+    func createValidURL(path: Paths, query: [URLQueryItem]) -> URL {
         var urlComponents = URLComponents()
         urlComponents.scheme = self.scheme
         urlComponents.host = self.host.rawValue
