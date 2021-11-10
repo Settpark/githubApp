@@ -9,8 +9,9 @@ import Foundation
 import RxSwift
 
 protocol RepositoryLayerType {
-    func requestRepositoryList(path: Paths, query: [URLQueryItem]) -> Observable<SearchResult>
+    func requestRepositoryList(path: Paths, query: [URLQueryItem]) -> Observable<[RepositoriesModel]>
     func requestAccessToken(path: Paths, query: [URLQueryItem]) -> Observable<AccessTokenModel>
     func requestUserData<T: Decodable>(type: T.Type, path: Paths, token: [URLQueryItem]) -> Observable<T>
     func requestUserimage(url: String) -> Observable<Data>
+    func clearRepositories()
 }

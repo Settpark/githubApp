@@ -71,23 +71,25 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
     func initSearchButton() {
         self.searchButton.rx.tap
             .bind { [weak self] _ in
+                self?.viewModel.setCurretpage(value: 0)
                 self?.viewModel.input.onNext([URLQueryItem(name: "q", value: self?.searchField.text)])
+                self?.listTableview.contentOffset = .zero
             }.disposed(by: self.disposeBag)
     }
     
     func initLoginButton() {
         self.titleLoginButton.rx.tap
-            .bind {
-                self.loginDelegate?.Login()
+            .bind { [weak self] _ in
+                self?.loginDelegate?.Login()
             }.disposed(by: disposeBag)
     }
     
     func testitleView() {
-        self.loginDelegate?.isLogin.bind {
-            if !$0 {
-                self.titleLoginButton.setTitle("로그인", for: .normal)
+        self.loginDelegate?.isLogin.bind { [weak self] islogin in
+            if !islogin {
+                self?.titleLoginButton.setTitle("로그인", for: .normal)
             } else {
-                self.titleLoginButton.setTitle("로그아웃", for: .normal)
+                self?.titleLoginButton.setTitle("로그아웃", for: .normal)
             }
         }.disposed(by: self.disposeBag)
     }
@@ -120,6 +122,15 @@ extension RepositoryListViewController {
 extension RepositoryListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 175
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        let contentOffsetY = scrollView.contentOffset.y
+        let tableViewContentSize = listTableview.contentSize.height
+                
+        if contentOffsetY > tableViewContentSize - scrollView.frame.height {
+            self.viewModel.input.onNext([URLQueryItem(name: "q", value: self.searchField.text)])
+        }
     }
 }
 
