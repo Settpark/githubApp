@@ -20,7 +20,8 @@ final class RepositoryListCell: UITableViewCell {
     private var title: UIStackView
     private let customDescription: UILabel
     private let starButton: UIButton
-    private weak var delegate: StarButtonDelegate?
+    private weak var delegate: StarManager?
+    private var isCheck: Bool?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         self.disposeBag = DisposeBag()
@@ -49,6 +50,7 @@ final class RepositoryListCell: UITableViewCell {
         self.starButton = UIButton()
         self.customDescription = UILabel()
         self.customDescription.numberOfLines = 2
+        self.isCheck = nil
         super.init(style: .default, reuseIdentifier: nil)
     }
     
@@ -87,7 +89,8 @@ final class RepositoryListCell: UITableViewCell {
         }
     }
     
-    func configureCell(with source: RepositoriesModel, buttonDelegate: StarButtonDelegate) {
+    func configureCell(with source: RepositoriesModel, buttonDelegate: StarManager) {
+        self.delegate = buttonDelegate
         self.drawIcon()
         self.configureContentView()
         self.drawTitle(source1: source.owner?.login, source2: source.name)
@@ -95,13 +98,45 @@ final class RepositoryListCell: UITableViewCell {
         self.drawTopics(source: source.topics)
         self.drawStarCount(source: source.stargazersCount)
         self.drawStarButton(constraint: self)
-        self.delegate = buttonDelegate
+        
+        initIsCheck(owner: source.owner, name: source.name)
+    }
+    
+    func initIsCheck(owner: Owner?, name: String?) {
+        guard let ownerInfo = owner?.login, let repoName = name else {
+            return
+        }
+        self.delegate?.checkStarRepository(owner: ownerInfo, repo: repoName)
+            .observe(on: MainScheduler.instance)
+            .bind() { [weak self] check in
+                self?.initStarImage(owner: ownerInfo, repo: repoName, ischeck: check)
+                self?.bindStarButton(owner: ownerInfo, repo: repoName)
+            }.disposed(by: self.disposeBag)
+    }
+    
+    func initStarImage(owner: String, repo: String, ischeck: Bool) {
+        if !ischeck {
+            self.starButton.setBackgroundImage(UIImage(systemName: "star"), for: .normal)
+        } else {
+            self.starButton.setBackgroundImage(UIImage(systemName: "star.fill"), for: .normal)
+        }
+    }
+    
+    func bindStarButton(owner: String, repo: String) {
         self.starButton.rx.tap
             .bind {
-                guard let ownerInfo = source.owner?.login, let repoName = source.name else {
-                    return
-                }
-                self.delegate?.starRepository(owner: ownerInfo, repo: repoName)
+                self.delegate?.checkStarRepository(owner: owner, repo: repo)
+                    .observe(on: MainScheduler.instance)
+                    .bind { check in
+                        if !check {
+                            self.delegate?.starRepository(owner: owner, repo: repo)
+                            self.starButton.setBackgroundImage(UIImage(systemName: "star.fill"), for: .normal)
+                        }
+                        else {
+                            self.delegate?.unstarRespository(owner: owner, repo: repo)
+                            self.starButton.setBackgroundImage(UIImage(systemName: "star"), for: .normal)
+                        }
+                    }.disposed(by: self.disposeBag)
             }.disposed(by: self.disposeBag)
     }
     
@@ -157,7 +192,7 @@ final class RepositoryListCell: UITableViewCell {
         self.customDescription.textAlignment = .left
     }
     
-    func drawTopics(source: [String]?) {        
+    func drawTopics(source: [String]?) {
         if let topics = source {
             self.topics.translatesAutoresizingMaskIntoConstraints = false
             self.customContentView.addArrangedSubview(self.topics)

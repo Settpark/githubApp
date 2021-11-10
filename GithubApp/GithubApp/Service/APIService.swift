@@ -27,12 +27,12 @@ struct APIService: APIServiceType {
             }
     }
     
-    func starUserrepo(path: Paths, token: [URLQueryItem]) -> Observable<(response: HTTPURLResponse, data: Data)> {
+    func starUserrepo(path: Paths, token: [URLQueryItem], method: HttpMethod) -> Observable<(response: HTTPURLResponse, data: Data)> {
         let endPoint = StarEndPoint.init()
         let url = endPoint.createValidURL(path: .star, query: token)
 
         var request = URLRequest.init(url: url)
-        request.httpMethod = HttpMethod.put.rawValue
+        request.httpMethod = method.rawValue
         request.addValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
         if let validToken = token[2].value {
             let tokenAddHeader = token[2].name + " " + validToken

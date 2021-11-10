@@ -276,13 +276,31 @@ extension LoginViewController {
     }
 }
 
-extension LoginViewController: StarButtonDelegate {    
+extension LoginViewController: StarManager {
+    func checkStarRepository(owner: String, repo: String) -> Observable<Bool> {
+        if !(self.isLogin.value) {
+            return Observable.just(false)
+        }
+        let userName = URLQueryItem(name: "owner", value: owner)
+        let userRepo = URLQueryItem(name: "repo", value: repo)
+        return self.viewModel.checkStaredUserRepo(path: .star, query: [userName, userRepo], method: .get)
+    }
+    
+    func unstarRespository(owner: String, repo: String) {
+        if !self.isLogin.value {
+            return
+        }
+        let userName = URLQueryItem(name: "owner", value: owner)
+        let userRepo = URLQueryItem(name: "repo", value: repo)
+        self.viewModel.starUserRepo(path: .star, query: [userName, userRepo], method: .delete)
+    }
+    
     func starRepository(owner: String, repo: String) {
         if !self.isLogin.value {
             return
         }
         let userName = URLQueryItem(name: "owner", value: owner)
         let userRepo = URLQueryItem(name: "repo", value: repo)
-        self.viewModel.starUserRepo(path: .star, query: [userName, userRepo])
+        self.viewModel.starUserRepo(path: .star, query: [userName, userRepo], method: .put)
     }
 }

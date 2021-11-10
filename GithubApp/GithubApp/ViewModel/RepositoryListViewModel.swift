@@ -52,8 +52,22 @@ class RepositoryListViewModel {
             }
     }
     
-    func starUserRepo(path: Paths, query: [URLQueryItem]) {
+    func checkStaredUserRepo(path: Paths, query: [URLQueryItem], method: HttpMethod) -> Observable<Bool> {
+        guard let accessToken = userToken?.accessToken else {
+            return Observable<Bool>.just(false)
+        }
+        let tempToken = URLQueryItem(name: "token", value: accessToken)
+        var tempQuery = query
+        tempQuery.append(tempToken)
         
+        return repository.starUserrepo(path: path, query: tempQuery, method: method)
+            .map { statuscode -> Bool in
+                if statuscode > 400 { return false }
+                else { return true }
+            }
+    }
+    
+    func starUserRepo(path: Paths, query: [URLQueryItem], method: HttpMethod) {
         guard let accessToken = userToken?.accessToken else {
             return
         }
@@ -61,7 +75,7 @@ class RepositoryListViewModel {
         var tempQuery = query
         tempQuery.append(tempToken)
         
-        repository.starUserrepo(path: path, query: tempQuery)
+        repository.starUserrepo(path: path, query: tempQuery, method: method)
             .subscribe{ _ in }
             .disposed(by: self.disposeBag)
     }
