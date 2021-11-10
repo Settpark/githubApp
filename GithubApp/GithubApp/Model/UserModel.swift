@@ -8,6 +8,6 @@
 import UIKit
 
 struct UserModel {
-    var login: String
-    var avatarUrl: UIImage?
+    let login: String
+    let avatarUrl: UIImage?
 }

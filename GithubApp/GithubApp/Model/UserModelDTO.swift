@@ -8,6 +8,6 @@
 import Foundation
 
 struct UserModelDTO: Decodable {
-    var login: String
-    var avatarUrl: String?
+    let login: String
+    let avatarUrl: String?
 }

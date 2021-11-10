@@ -24,14 +24,14 @@ final class MainTabBarController: UITabBarController {
         super.init(coder: coder)
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         setTabBarItem()
-    }
-    
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        drawTopview(constraint: self.view)
+        setLoginDelegateRepoController()
     }
     
     func sendAccessCode(url: URL) {
@@ -39,6 +39,16 @@ final class MainTabBarController: UITabBarController {
             return
         }
         loginViewController.requestAccessToken(url: url)
+    }
+    
+    func setLoginDelegateRepoController() {
+        guard let repoViewController = self.viewControllers?.first as? RepositoryListViewController,
+              let loginViewController = self.viewControllers?[1] as? LoginViewController else {
+                  return
+              }
+        if repoViewController.loginDelegate == nil {
+            repoViewController.loginDelegate = loginViewController
+        }
     }
 }
 
@@ -55,51 +65,5 @@ extension MainTabBarController {
         self.tabBar.unselectedItemTintColor = .white
         self.tabBar.tintColor = .white
         self.tabBar.backgroundColor = .systemPink
-    }
-    
-    func drawTopview(constraint guide: UIView) {
-        self.view.addSubview(self.titleView)
-        self.titleView.backgroundColor = .systemPink
-        self.titleView.translatesAutoresizingMaskIntoConstraints = false
-        self.titleView.centerXAnchor.constraint(equalTo: guide.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        self.titleView.topAnchor.constraint(equalTo: guide.safeAreaLayoutGuide.topAnchor).isActive = true
-        self.titleView.widthAnchor.constraint(equalTo: guide.safeAreaLayoutGuide.widthAnchor).isActive = true
-        self.titleView.heightAnchor.constraint(equalTo: guide.safeAreaLayoutGuide.heightAnchor, multiplier: ViewRatio.topViewHeightRatio.rawValue).isActive = true
-        self.drawTitleview(constraint: self.titleView)
-        self.drawLoginview(constraint: titleView)
-    }
-    
-    func drawTitleview(constraint guide: UIView) {
-        let titleLabel = UILabel()
-        guide.addSubview(titleLabel)
-        titleLabel.text = "Github"
-        titleLabel.font = .systemFont(ofSize: 17)
-        titleLabel.sizeToFit()
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.centerXAnchor.constraint(equalTo: guide.centerXAnchor).isActive = true
-        titleLabel.centerYAnchor.constraint(equalTo: guide.centerYAnchor).isActive = true
-    }
-    
-    func drawLoginview(constraint guide: UIView) {
-        guide.addSubview(self.loginButton)
-        self.loginButton.setTitle("로그인", for: .normal)
-        self.loginButton.sizeToFit()
-        self.loginButton.translatesAutoresizingMaskIntoConstraints = false
-        self.loginButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor).isActive = true
-        self.loginButton.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -10).isActive = true
-    }
-    
-    func drawRepositoryListSearchBar() {
-        guard let firstViewController = self.selectedViewController as? RepositoryListViewController else {
-            return
-        }
-        firstViewController.drawSearchfield(constraint: self.titleView)
-    }
-    
-    func drawUserInfoTopview() {
-        guard let secondViewController = self.selectedViewController as? LoginViewController else {
-            return
-        }
-        secondViewController.drawUserinfoView(constraint: self.titleView)
     }
 }

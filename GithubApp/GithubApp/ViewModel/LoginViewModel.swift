@@ -16,7 +16,6 @@ class LoginViewModel {
     let outputUserinfo: PublishSubject<UserModelDTO>
     let inputToken: PublishSubject<AccessTokenModel>
     let outputUserRepo: PublishSubject<[RepositoryListSectionData]>
-    let outputIslogin: BehaviorRelay<Bool>
     
     init(repositoryLayer: RepositoryLayerType) {
         self.repository = repositoryLayer
@@ -24,7 +23,6 @@ class LoginViewModel {
         self.outputUserinfo = PublishSubject<UserModelDTO>()
         self.inputToken = PublishSubject<AccessTokenModel>()
         self.outputUserRepo = PublishSubject<[RepositoryListSectionData]>()
-        self.outputIslogin = BehaviorRelay<Bool>(value: false)
 
         self.inputToken
             .flatMap { token in
@@ -35,9 +33,7 @@ class LoginViewModel {
         self.inputToken
             .flatMap { token in
                 return self.requestUserRepos(path: .userRepo, token: token.accessToken ?? "")
-            }
-            .do(onDispose: { self.outputIslogin.accept(true) })
-            .bind(to: outputUserRepo)
+            }.bind(to: outputUserRepo)
             .disposed(by: self.disposeBag)
     }
     

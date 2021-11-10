@@ -9,7 +9,7 @@ import Foundation
 import RxDataSources
 
 struct RepositoryListSectionData {
-  var items: [Item]
+    var items: [Item]
 }
 
 extension RepositoryListSectionData: SectionModelType {
