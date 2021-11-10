@@ -14,7 +14,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
-        #if RELEASE
         let apiService = APIService(urlSessionManager: URLSession.shared)
         let repositoryLayer = RepositoryLayer(apiService: apiService)
         let repositoriesViewModel = RepositoryListViewModel(repositoryLayer: repositoryLayer)
@@ -29,10 +28,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         window?.rootViewController = rootVC
         window?.makeKeyAndVisible()
-        
-        #elseif DEBUG
-        
-        #endif
     }
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {

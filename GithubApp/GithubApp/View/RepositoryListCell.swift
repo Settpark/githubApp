@@ -76,7 +76,13 @@ final class RepositoryListCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
+        self.customDescription.removeFromSuperview()
         self.starButton.setBackgroundImage(nil, for: .normal)
+        
+        self.customContentView.subviews.forEach {
+            $0.removeFromSuperview()
+        }
+        self.starButton.removeFromSuperview()
         self.title.subviews.forEach { view in
             view.removeFromSuperview()
         }
@@ -111,13 +117,13 @@ final class RepositoryListCell: UITableViewCell {
         self.delegate?.checkStarRepository(owner: ownerInfo, repo: repoName)
             .observe(on: MainScheduler.instance)
             .bind() { [weak self] check in
-                self?.initStarImage(owner: ownerInfo, repo: repoName, ischeck: check)
+                self?.initStarImage(isCheck: check)
                 self?.bindStarButton(owner: ownerInfo, repo: repoName)
             }.disposed(by: self.disposeBag)
     }
     
-    func initStarImage(owner: String, repo: String, ischeck: Bool?) {
-        if !(ischeck ?? false) {
+    func initStarImage(isCheck: Bool?) {
+        if isCheck == nil || isCheck == false {
             self.starButton.setBackgroundImage(UIImage(systemName: "star"), for: .normal)
         } else {
             self.starButton.setBackgroundImage(UIImage(systemName: "star.fill"), for: .normal)
@@ -126,22 +132,21 @@ final class RepositoryListCell: UITableViewCell {
     
     func bindStarButton(owner: String, repo: String) {
         self.starButton.rx.tap
-            .bind { [unowned self] _ in
-                self.delegate?.checkStarRepository(owner: owner, repo: repo)
-                    .observe(on: MainScheduler.instance)
-                    .bind { [weak self] check in
-                        if check == nil {
-                            return
-                        }
-                        else if !(check!)  {
-                            self?.delegate?.starRepository(owner: owner, repo: repo)
-                            self?.starButton.setBackgroundImage(UIImage(systemName: "star.fill"), for: .normal)
-                        }
-                        else {
-                            self?.delegate?.unstarRespository(owner: owner, repo: repo)
-                            self?.starButton.setBackgroundImage(UIImage(systemName: "star"), for: .normal)
-                        }
-                    }.disposed(by: self.disposeBag)
+            .flatMap {
+                return (self.delegate?.checkStarRepository(owner: owner, repo: repo))!
+            }.observe(on: MainScheduler.instance)
+            .bind { state in
+                guard let valid = state else {
+                    return
+                }
+                if !valid {
+                    self.delegate?.starRepository(owner: owner, repo: repo)
+                    self.starButton.setBackgroundImage(UIImage(systemName: "star.fill"), for: .normal)
+                } else {
+                    self.delegate?.unstarRespository(owner: owner, repo: repo)
+                    self.starButton.setBackgroundImage(UIImage(systemName: "star"), for: .normal)
+                }
+                self.layer.displayIfNeeded()
             }.disposed(by: self.disposeBag)
     }
     
@@ -173,12 +178,14 @@ final class RepositoryListCell: UITableViewCell {
         self.customContentView.addArrangedSubview(self.title)
         self.title.translatesAutoresizingMaskIntoConstraints = false
         let userLabel = UILabel()
+        userLabel.tintColor = .blue
         userLabel.text = existUser + "/"
         userLabel.font = .systemFont(ofSize: 14)
         userLabel.sizeToFit()
         userLabel.textAlignment = .left
         self.title.addArrangedSubview(userLabel)
         let nameLabel = UILabel()
+        userLabel.tintColor = .blue
         nameLabel.text = existName
         nameLabel.font = .boldSystemFont(ofSize: 14)
         nameLabel.sizeToFit()
@@ -203,8 +210,8 @@ final class RepositoryListCell: UITableViewCell {
             self.customContentView.addArrangedSubview(self.topics)
             for item in topics {
                 let label = UILabel()
-                label.backgroundColor = .systemPink
-                label.tintColor = .white
+                label.backgroundColor = UIColor(red: 178/255, green: 244/255, blue: 1, alpha: 0.9)
+                label.textColor = .blue
                 label.text = item
                 label.sizeToFit()
                 label.font = .systemFont(ofSize: 14)
@@ -233,7 +240,7 @@ final class RepositoryListCell: UITableViewCell {
         } else {
             starCount.text = "\(localStar)"
         }
-        starImage.tintColor = .systemPink
+        starImage.tintColor = .systemGray2
         starImage.translatesAutoresizingMaskIntoConstraints = false
         starImage.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.05).isActive = true
         starImage.heightAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.05).isActive = true
@@ -242,8 +249,7 @@ final class RepositoryListCell: UITableViewCell {
     func drawStarButton(constraint guide: UIView) {
         self.addSubview(starButton)
         self.bringSubviewToFront(self.starButton)
-        self.starButton.tintColor = .systemPink
-        self.starButton.setBackgroundImage(UIImage(systemName: "star"), for: .normal)
+        self.starButton.tintColor = .systemYellow
         self.starButton.translatesAutoresizingMaskIntoConstraints = false
         self.starButton.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.1).isActive = true
         self.starButton.heightAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.1).isActive = true

@@ -29,7 +29,7 @@ class GithubAppTests: XCTestCase {
         }
     }
     
-    func test_올바른_url_repositoryList_요청시() {
+    func test_올바른_url인가_repositoryList_요청시() {
         //given
         let sessionManager = URLSessionManagerStub()
         let service = APIService.init(urlSessionManager: sessionManager)

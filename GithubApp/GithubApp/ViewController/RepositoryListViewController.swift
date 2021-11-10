@@ -72,7 +72,10 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
         self.searchButton.rx.tap
             .bind { [weak self] _ in
                 self?.viewModel.setCurretpage(value: 0)
-                self?.viewModel.input.onNext([URLQueryItem(name: "q", value: self?.searchField.text)])
+                guard let validText = self?.searchField.text, self?.searchField.text != "" else {
+                    return
+                }
+                self?.viewModel.input.onNext([URLQueryItem(name: "q", value: validText)])
                 self?.listTableview.contentOffset = .zero
             }.disposed(by: self.disposeBag)
     }
@@ -135,7 +138,7 @@ extension RepositoryListViewController: UITableViewDelegate {
         let tableViewContentSize = listTableview.contentSize.height
         
         if contentOffsetY > tableViewContentSize - scrollView.frame.height {
-            self.viewModel.input.onNext([URLQueryItem(name: "q", value: self.searchField.text)])
+            self.viewModel.input.onNext([URLQueryItem(name: "q", value: self.searchField.text ?? "")])
         }
     }
 }
@@ -181,7 +184,10 @@ extension RepositoryListViewController {
     }
     
     func drawSearchbutton(constraint guide: UIView) {
-        self.searchButton.backgroundColor = .systemPink
+        self.searchButton.backgroundColor = .darkGray
+        self.searchButton.layer.masksToBounds = true
+        self.searchButton.layer.cornerRadius = 5
+        self.searchButton.setTitle("검색", for: .normal)
         self.searchButton.translatesAutoresizingMaskIntoConstraints = false
         self.searchButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10).isActive = true
         self.searchButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor).isActive = true
@@ -203,7 +209,7 @@ extension RepositoryListViewController {
     }
     
     func drawTitleView() {
-        self.titleView.backgroundColor = .systemPink
+        self.titleView.backgroundColor = .darkGray
         self.titleView.translatesAutoresizingMaskIntoConstraints = false
         self.titleView.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         self.titleView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true

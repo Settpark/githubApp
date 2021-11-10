@@ -84,6 +84,11 @@ final class LoginViewController: UIViewController, ViewModelBindable, LoginDeleg
             .bind { [weak self] _ in
                 self?.Login()
             }.disposed(by: self.disposeBag)
+        
+        self.titleLoginButton.rx.tap
+            .bind { [weak self] _ in
+                self?.Login()
+            }.disposed(by: self.disposeBag)
     }
     
     func requestAccessToken(url: URL) -> Void {
@@ -154,7 +159,7 @@ extension LoginViewController {
     
     func drawLoginButton() {
         self.centerLoginButton.setTitle("로그인", for: .normal)
-        self.centerLoginButton.backgroundColor = .systemGray6
+        self.centerLoginButton.backgroundColor = .darkGray
         self.centerLoginButton.layer.masksToBounds = true
         self.centerLoginButton.layer.cornerRadius = 5
         self.centerLoginButton.translatesAutoresizingMaskIntoConstraints = false
@@ -202,7 +207,7 @@ extension LoginViewController {
     }
     
     func drawTitleView() {
-        self.titleView.backgroundColor = .systemPink
+        self.titleView.backgroundColor = .darkGray
         self.titleView.translatesAutoresizingMaskIntoConstraints = false
         self.titleView.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         self.titleView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
@@ -281,6 +286,7 @@ extension LoginViewController: StarManager {
         if !(self.isLogin.value) {
             return Observable.just(nil)
         }
+
         let userName = URLQueryItem(name: "owner", value: owner)
         let userRepo = URLQueryItem(name: "repo", value: repo)
         return self.viewModel.checkStaredUserRepo(path: .star, query: [userName, userRepo], method: .get)

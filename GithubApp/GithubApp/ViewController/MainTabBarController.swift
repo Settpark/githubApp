@@ -66,6 +66,6 @@ extension MainTabBarController {
         
         self.tabBar.unselectedItemTintColor = .white
         self.tabBar.tintColor = .white
-        self.tabBar.backgroundColor = .systemPink
+        self.tabBar.backgroundColor = .darkGray
     }
 }
