@@ -9,7 +9,7 @@ import Foundation
 import RxCocoa
 import RxSwift
 
-class LoginViewModel {
+final class LoginViewModel {
     
     private let repository: RepositoryLayerType
     private let disposeBag: DisposeBag

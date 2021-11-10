@@ -6,14 +6,14 @@
 //
 
 import Foundation
-import RxCocoa
 import RxSwift
+import RxCocoa
 
 struct APIService: APIServiceType {
-    private let urlsession: URLSession
+    private let urlsession: URLSessionProtocol
     
-    init() {
-        self.urlsession = URLSession.shared
+    init(urlSessionManager: URLSessionProtocol) {
+        self.urlsession = urlSessionManager
     }
     
     func requestData<T: Decodable>(type: T.Type, path: Paths, query: [URLQueryItem]) -> Observable<T> {
@@ -21,7 +21,7 @@ struct APIService: APIServiceType {
         let url = endPoint.createValidURL(path: path, query: query)
         
         let request = URLRequest.init(url: url)
-        return self.urlsession.rx.data(request: request)
+        return URLSession.shared.rx.data(request: request)
             .flatMap { data in
                 return self.decodedData(type: type, data: data)
             }
@@ -38,7 +38,7 @@ struct APIService: APIServiceType {
             let tokenAddHeader = token[2].name + " " + validToken
             request.addValue(tokenAddHeader, forHTTPHeaderField: "Authorization")
         }
-        return self.urlsession.rx.response(request: request)
+        return URLSession.shared.rx.response(request: request)
     }
     
     func requestAccessToken<T: Decodable>(type: T.Type, path: Paths, query: [URLQueryItem]) -> Observable<T> {
@@ -48,7 +48,7 @@ struct APIService: APIServiceType {
         var request = URLRequest.init(url: url)
         request.addValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
         request.httpMethod = HttpMethod.post.rawValue
-        return self.urlsession.rx.data(request: request)
+        return URLSession.shared.rx.data(request: request)
             .flatMap { data in
                 return self.decodedData(type: type, data: data)
             }
@@ -64,7 +64,7 @@ struct APIService: APIServiceType {
             let tokenAddHeader = validToken.name + " " + validTokenvalue
             request.addValue(tokenAddHeader, forHTTPHeaderField: "Authorization")
         }
-        return self.urlsession.rx.data(request: request)
+        return URLSession.shared.rx.data(request: request)
             .flatMap { data in
                 return self.decodedData(type: type, data: data)
             }
@@ -73,7 +73,7 @@ struct APIService: APIServiceType {
     func getfetchedImage(url: String) -> Observable<Data> {
         let validURL = URL(string: url)!
         let request = URLRequest.init(url: validURL)
-        return self.urlsession.rx.data(request: request)
+        return URLSession.shared.rx.data(request: request)
     }
     
     func decodedData<T: Decodable>(type: T.Type, data: Data) -> Observable<T> {
@@ -85,5 +85,21 @@ struct APIService: APIServiceType {
         } catch (let err) {
             return Observable.error(err)
         }
+    }
+    
+    func requetDataWithSession<T: Decodable>(request: URLRequest, type: T.Type, completion: @escaping (Result<T,Error>) -> Void) {
+        let endPoint = EndPointRepositories.init()
+        let query = URLQueryItem(name: "q", value: "forTest")
+        let request = URLRequest(url: endPoint.createValidURL(path: .Repositories, query: [query]))
+        let jsonDecoder = JSONDecoder()
+        jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
+        self.urlsession.dataTask(with: request) { data, response, error in
+            do {
+                let result = try jsonDecoder.decode(type, from: data!)
+                completion(.success(result))
+            } catch (let error) {
+                completion(.failure(error))
+            }
+        }.resume()
     }
 }

@@ -8,7 +8,7 @@
 import Foundation
 import RxSwift
 
-class RepositoryListViewModel {
+final class RepositoryListViewModel {
     
     private let repository: RepositoryLayerType
     private let disposeBag: DisposeBag
