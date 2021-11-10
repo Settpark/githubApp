@@ -81,8 +81,8 @@ final class LoginViewController: UIViewController, ViewModelBindable, LoginDeleg
     
     func initLoginButton() {
         self.centerLoginButton.rx.tap
-            .bind {
-                self.Login()
+            .bind { [weak self] _ in
+                self?.Login()
             }.disposed(by: self.disposeBag)
     }
     
@@ -90,37 +90,37 @@ final class LoginViewController: UIViewController, ViewModelBindable, LoginDeleg
         let code = url.absoluteString.components(separatedBy: "code=").last ?? ""
         let accessCode = URLQueryItem.init(name: "code", value: code)
         self.viewModel.getAceessToken(path: .AccessToken, query: [accessCode])
-            .bind {
-                self.loginToken.onNext($0)
+            .bind { [weak self] token in
+                self?.loginToken.onNext(token)
             }
             .disposed(by: self.disposeBag)
     }
     
     func initDrawOption() {
         self.isLogin
-            .bind {
-                self.drawLoginView(currentState: $0)
+            .bind { [weak self] state in
+                self?.drawLoginView(currentState: state)
             }.disposed(by: self.disposeBag)
     }
     
     func bindUserinfo() {
         self.viewModel.outputUserinfo
             .observe(on: MainScheduler.instance)
-            .bind {
-                self.userName.text = $0.login
+            .bind { [weak self] title in
+                self?.userName.text = title.login
             }.disposed(by: disposeBag)
         
         self.viewModel.outputUserinfo
-            .flatMap {
-                return self.viewModel.requestUserimage(url: $0.avatarUrl ?? "")
+            .flatMap { [unowned self] image in
+                return self.viewModel.requestUserimage(url: image.avatarUrl ?? "")
             }.observe(on: MainScheduler.instance)
-            .bind {
-                self.userImage.image = UIImage(data: $0)
+            .bind { [weak self] data in
+                self?.userImage.image = UIImage(data: data)
             }.disposed(by: self.disposeBag)
         
         self.loginToken
-            .bind {
-                self.viewModel.inputToken.onNext($0)
+            .bind { [weak self] token in
+                self?.viewModel.inputToken.onNext(token)
             }
             .disposed(by: self.disposeBag)
     }
@@ -277,9 +277,9 @@ extension LoginViewController {
 }
 
 extension LoginViewController: StarManager {
-    func checkStarRepository(owner: String, repo: String) -> Observable<Bool> {
+    func checkStarRepository(owner: String, repo: String) -> Observable<Bool?> {
         if !(self.isLogin.value) {
-            return Observable.just(false)
+            return Observable.just(nil)
         }
         let userName = URLQueryItem(name: "owner", value: owner)
         let userRepo = URLQueryItem(name: "repo", value: repo)

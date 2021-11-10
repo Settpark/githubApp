@@ -141,9 +141,9 @@ extension RepositoryListViewController: UITableViewDelegate {
 }
 
 extension RepositoryListViewController: StarManager {
-    func checkStarRepository(owner: String, repo: String) -> Observable<Bool> {
+    func checkStarRepository(owner: String, repo: String) -> Observable<Bool?> {
         if !(self.loginDelegate?.isLogin.value ?? false) {
-            return Observable.just(false)
+            return Observable.just(nil)
         }
         let userName = URLQueryItem(name: "owner", value: owner)
         let userRepo = URLQueryItem(name: "repo", value: repo)

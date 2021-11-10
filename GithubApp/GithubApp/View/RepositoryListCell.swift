@@ -75,6 +75,8 @@ final class RepositoryListCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        
+        self.starButton.setBackgroundImage(nil, for: .normal)
         self.title.subviews.forEach { view in
             view.removeFromSuperview()
         }
@@ -114,8 +116,8 @@ final class RepositoryListCell: UITableViewCell {
             }.disposed(by: self.disposeBag)
     }
     
-    func initStarImage(owner: String, repo: String, ischeck: Bool) {
-        if !ischeck {
+    func initStarImage(owner: String, repo: String, ischeck: Bool?) {
+        if !(ischeck ?? false) {
             self.starButton.setBackgroundImage(UIImage(systemName: "star"), for: .normal)
         } else {
             self.starButton.setBackgroundImage(UIImage(systemName: "star.fill"), for: .normal)
@@ -124,17 +126,20 @@ final class RepositoryListCell: UITableViewCell {
     
     func bindStarButton(owner: String, repo: String) {
         self.starButton.rx.tap
-            .bind {
+            .bind { [unowned self] _ in
                 self.delegate?.checkStarRepository(owner: owner, repo: repo)
                     .observe(on: MainScheduler.instance)
-                    .bind { check in
-                        if !check {
-                            self.delegate?.starRepository(owner: owner, repo: repo)
-                            self.starButton.setBackgroundImage(UIImage(systemName: "star.fill"), for: .normal)
+                    .bind { [weak self] check in
+                        if check == nil {
+                            return
+                        }
+                        else if !(check!)  {
+                            self?.delegate?.starRepository(owner: owner, repo: repo)
+                            self?.starButton.setBackgroundImage(UIImage(systemName: "star.fill"), for: .normal)
                         }
                         else {
-                            self.delegate?.unstarRespository(owner: owner, repo: repo)
-                            self.starButton.setBackgroundImage(UIImage(systemName: "star"), for: .normal)
+                            self?.delegate?.unstarRespository(owner: owner, repo: repo)
+                            self?.starButton.setBackgroundImage(UIImage(systemName: "star"), for: .normal)
                         }
                     }.disposed(by: self.disposeBag)
             }.disposed(by: self.disposeBag)

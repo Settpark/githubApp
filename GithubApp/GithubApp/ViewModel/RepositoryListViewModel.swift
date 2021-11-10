@@ -52,9 +52,9 @@ class RepositoryListViewModel {
             }
     }
     
-    func checkStaredUserRepo(path: Paths, query: [URLQueryItem], method: HttpMethod) -> Observable<Bool> {
+    func checkStaredUserRepo(path: Paths, query: [URLQueryItem], method: HttpMethod) -> Observable<Bool?> {
         guard let accessToken = userToken?.accessToken else {
-            return Observable<Bool>.just(false)
+            return Observable.just(nil)
         }
         let tempToken = URLQueryItem(name: "token", value: accessToken)
         var tempQuery = query

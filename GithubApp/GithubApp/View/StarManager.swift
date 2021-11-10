@@ -11,5 +11,5 @@ import UIKit
 protocol StarManager: AnyObject {    
     func starRepository(owner: String, repo: String)
     func unstarRespository(owner: String, repo: String)
-    func checkStarRepository(owner: String, repo: String) -> Observable<Bool>
+    func checkStarRepository(owner: String, repo: String) -> Observable<Bool?>
 }
