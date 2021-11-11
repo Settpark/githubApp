@@ -26,7 +26,7 @@ IPhone 12 이전 시뮬레이터에서 사용하는 것을 권장드립니다.
 
 ### 1. 검색 기능
 
-<p align="left"><img src="/image/Search_repo.gif" width="" height="500"/></p>
+<p align="left"><img src="/image/Search_Repo.gif" width="" height="500"/></p>
 
 - 위와 같이 Github의 레포지토리 목록을 검색할 수 있습니다.
 - 검색 좌측의 TextField란에 원하는 값을 입력 후 검색 버튼을 누르면 목록을 표시합니다.
