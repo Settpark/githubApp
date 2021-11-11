@@ -26,7 +26,7 @@ IPhone 12 이전 시뮬레이터에서 사용하는 것을 권장드립니다.
 
 ### 1. 검색 기능
 
-<p align="left"><img src="./image/search_repo.gif" width="" height="500"/></p>
+<p align="left"><img src="/image/Search_repo.gif" width="" height="500"/></p>
 
 - 위와 같이 Github의 레포지토리 목록을 검색할 수 있습니다.
 - 검색 좌측의 TextField란에 원하는 값을 입력 후 검색 버튼을 누르면 목록을 표시합니다.
@@ -34,7 +34,7 @@ IPhone 12 이전 시뮬레이터에서 사용하는 것을 권장드립니다.
 
 ### 2. 스크롤 기능
 
-<p align="left"><img src="./image/Scroll_Repo.gif" width="" height="500"/></p>
+<p align="left"><img src="/image/Scroll_Repo.gif" width="" height="500"/></p>
 
 - 위와 같이 목록이 10개 보다 많으면 추가적으로 계속 목록을 추가할 수 있습니다.
 - 목록의 가장 아래의 항목이 표시된 상태에서 목록을 강하게 위로 끌어올려 주세요.
@@ -42,8 +42,8 @@ IPhone 12 이전 시뮬레이터에서 사용하는 것을 권장드립니다.
 
 ### 3. 로그인 기능
 
-<p align="left"><img src="./image/login_Left.png" width="" height="500"/>
-<img src="./image/login_Right.png" width="" height="500"/>
+<p align="left"><img src="/image/Logout_Left.png" width="" height="500"/>
+<img src="./image/Logout_Right.png" width="" height="500"/>
 </p>
 
 - 위의 왼쪽 이미지와 우상단에 보이는 로그인 버튼과 오른쪽 이미지의 중앙과 우상단의 버튼으로 모두 로그인 요청이 가능합니다.
