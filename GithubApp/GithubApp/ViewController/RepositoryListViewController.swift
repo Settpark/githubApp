@@ -82,14 +82,17 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
     
     func initLoginButton() {
         self.titleLoginButton.rx.tap
-            .bind { [weak self] _ in
-                self?.loginDelegate?.Login()
+            .map { [unowned self] _ -> Bool in
+                return (self.loginDelegate?.isLogin.value)!
+            }.bind { [weak self] state in
+                self?.loginDelegate?.Login(state: state)
             }.disposed(by: disposeBag)
     }
     
     func initLoginToken() {
         self.loginDelegate?.loginToken
-            .bind{ self.viewModel.inputToken.onNext($0)
+            .bind{
+                self.viewModel.inputToken.onNext($0)
             }
             .disposed(by: self.disposeBag)
     }

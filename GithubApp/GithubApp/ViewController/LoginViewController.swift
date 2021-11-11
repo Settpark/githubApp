@@ -64,11 +64,15 @@ final class LoginViewController: UIViewController, ViewModelBindable, LoginDeleg
         self.drawViews()
     }
     
-    func Login() {
-        let endpoint = EndPointAuthorization.init()
-        let url = endpoint.createValidURL(path: .LoginPath, query: [])
-        UIApplication.shared.open(url)
-        self.isLogin.accept(true)
+    func Login(state: Bool) {
+        if !state {
+            let endpoint = EndPointAuthorization.init()
+            let url = endpoint.createValidURL(path: .LoginPath, query: [])
+            UIApplication.shared.open(url)
+        } else {
+            self.isLogin.accept(false)
+//            self.loginToken.onNext(nil)
+        }
     }
     
     func bindViewModel() {
@@ -81,24 +85,28 @@ final class LoginViewController: UIViewController, ViewModelBindable, LoginDeleg
     
     func initLoginButton() {
         self.centerLoginButton.rx.tap
-            .bind { [weak self] _ in
-                self?.Login()
+            .map {
+                return self.isLogin.value
+            }.bind { [weak self] state in
+                self?.Login(state: state)
             }.disposed(by: self.disposeBag)
         
         self.titleLoginButton.rx.tap
-            .bind { [weak self] _ in
-                self?.Login()
+            .map { [unowned self] _ -> Bool in
+                return self.isLogin.value
+            }.bind { [weak self] state in
+                self?.Login(state: state)
             }.disposed(by: self.disposeBag)
     }
     
     func requestAccessToken(url: URL) -> Void {
         let code = url.absoluteString.components(separatedBy: "code=").last ?? ""
         let accessCode = URLQueryItem.init(name: "code", value: code)
+        self.isLogin.accept(true)
         self.viewModel.getAceessToken(path: .AccessToken, query: [accessCode])
             .bind { [weak self] token in
                 self?.loginToken.onNext(token)
-            }
-            .disposed(by: self.disposeBag)
+            }.disposed(by: self.disposeBag)
     }
     
     func initDrawOption() {
@@ -286,7 +294,7 @@ extension LoginViewController: StarManager {
         if !(self.isLogin.value) {
             return Observable.just(nil)
         }
-
+        
         let userName = URLQueryItem(name: "owner", value: owner)
         let userRepo = URLQueryItem(name: "repo", value: repo)
         return self.viewModel.checkStaredUserRepo(path: .star, query: [userName, userRepo], method: .get)

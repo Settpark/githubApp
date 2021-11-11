@@ -11,5 +11,5 @@ import RxCocoa
 protocol LoginDelegate: AnyObject {
     var isLogin: BehaviorRelay<Bool> { get }
     var loginToken: PublishSubject<AccessTokenModel> { get }
-    func Login() -> Void
+    func Login(state: Bool) -> Void
 }
