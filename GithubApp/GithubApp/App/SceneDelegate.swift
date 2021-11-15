@@ -16,7 +16,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let apiService = APIService(urlSessionManager: URLSession.shared)
         let repositoryLayer = RepositoryLayer(apiService: apiService)
-        let repositoriesViewModel = RepositoryListViewModel(repositoryLayer: repositoryLayer)
+        let searchUsecase = SearchRepositoriesUsecase(repositoryLayer: repositoryLayer)
+        let repositoriesViewModel = RepositoryListViewModel(usecaseLayer: searchUsecase)
         let loginViewModel = LoginViewModel(repositoryLayer: repositoryLayer)
         let firstViewController = Scene.Repositories(repositoriesViewModel).instantiate()
         let loginViewController = Scene.LoginView(loginViewModel).instantiate()

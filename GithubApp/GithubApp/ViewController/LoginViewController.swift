@@ -67,8 +67,8 @@ final class LoginViewController: UIViewController, ViewModelBindable, LoginDeleg
     func Login(state: Bool) {
         if !state {
             let endpoint = EndPointAuthorization.init()
-            let url = endpoint.createValidURL(path: .LoginPath, query: [])
-            UIApplication.shared.open(url)
+//            let url = endpoint.createValidURL(path: .LoginPath, query: [])
+//            UIApplication.shared.open(url)
         } else {
             self.isLogin.accept(false)
 //            self.loginToken.onNext(nil)
@@ -84,19 +84,19 @@ final class LoginViewController: UIViewController, ViewModelBindable, LoginDeleg
     }
     
     func initLoginButton() {
-        self.centerLoginButton.rx.tap
-            .map {
-                return self.isLogin.value
-            }.bind { [weak self] state in
-                self?.Login(state: state)
-            }.disposed(by: self.disposeBag)
-        
-        self.titleLoginButton.rx.tap
-            .map { [unowned self] _ -> Bool in
-                return self.isLogin.value
-            }.bind { [weak self] state in
-                self?.Login(state: state)
-            }.disposed(by: self.disposeBag)
+//        self.centerLoginButton.rx.tap
+//            .map {
+//                return self.isLogin.value
+//            }.bind { [weak self] state in
+//                self?.Login(state: state)
+//            }.disposed(by: self.disposeBag)
+//
+//        self.titleLoginButton.rx.tap
+//            .map { [unowned self] _ -> Bool in
+//                return self.isLogin.value
+//            }.bind { [weak self] state in
+//                self?.Login(state: state)
+//            }.disposed(by: self.disposeBag)
     }
     
     func requestAccessToken(url: URL) -> Void {

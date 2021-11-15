@@ -11,14 +11,16 @@
 		8213F01527339FD300125B4C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8213F01427339FD300125B4C /* SceneDelegate.swift */; };
 		8213F01727339FD300125B4C /* RepositoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8213F01627339FD300125B4C /* RepositoryListViewController.swift */; };
 		8213F01C27339FD500125B4C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8213F01B27339FD500125B4C /* Assets.xcassets */; };
+		8236241027422E83009D6D9B /* QueryItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8236240F27422E83009D6D9B /* QueryItems.swift */; };
+		82362413274230E4009D6D9B /* EndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82362412274230E4009D6D9B /* EndPoint.swift */; };
+		8236241827423DB5009D6D9B /* SearchRepositoriesUsecase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8236241727423DB5009D6D9B /* SearchRepositoriesUsecase.swift */; };
 		8281BA7E27341524006D68C5 /* OwnerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8281BA7C27341524006D68C5 /* OwnerModel.swift */; };
 		8281BA7F27341524006D68C5 /* RepositoriesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8281BA7D27341524006D68C5 /* RepositoriesModel.swift */; };
 		8281BA8327341572006D68C5 /* APIServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8281BA8227341572006D68C5 /* APIServiceType.swift */; };
 		8281BA852734171C006D68C5 /* Paths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8281BA842734171C006D68C5 /* Paths.swift */; };
 		8281BA872734184D006D68C5 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8281BA862734184D006D68C5 /* APIService.swift */; };
 		8281BA892734189B006D68C5 /* EndPointRepositories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8281BA882734189B006D68C5 /* EndPointRepositories.swift */; };
-		8282A40E273944D4004B7D17 /* EndPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8282A40D273944D4004B7D17 /* EndPoints.swift */; };
-		8282A41027394FE2004B7D17 /* EndPointAccessToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8282A40F27394FE2004B7D17 /* EndPointAccessToken.swift */; };
+		8282A40E273944D4004B7D17 /* Host.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8282A40D273944D4004B7D17 /* Host.swift */; };
 		8282A41227395037004B7D17 /* EndPointManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8282A41127395037004B7D17 /* EndPointManager.swift */; };
 		8290468D2734E584005FD0AB /* RepositoryLayerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8290468C2734E584005FD0AB /* RepositoryLayerType.swift */; };
 		8290468F2734E60D005FD0AB /* RepositoryLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8290468E2734E60D005FD0AB /* RepositoryLayer.swift */; };
@@ -37,10 +39,8 @@
 		82ACC65B2736506800AAE27A /* RepositoryListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82ACC65A2736506800AAE27A /* RepositoryListViewModel.swift */; };
 		82CAF891273BF57200ED4A84 /* StarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CAF890273BF57200ED4A84 /* StarManager.swift */; };
 		82CAF893273BF66000ED4A84 /* HttpMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CAF892273BF66000ED4A84 /* HttpMethod.swift */; };
-		82CAF895273BF89700ED4A84 /* StarEndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CAF894273BF89700ED4A84 /* StarEndPoint.swift */; };
 		82D52F3F27399337005A710D /* AccessTokenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D52F3E27399337005A710D /* AccessTokenModel.swift */; };
 		82D52F42273995FD005A710D /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D52F41273995FD005A710D /* Client.swift */; };
-		82D52F4427399F75005A710D /* EndPointUserRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D52F4327399F75005A710D /* EndPointUserRepo.swift */; };
 		82D52F462739A36B005A710D /* UserModelDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D52F452739A36A005A710D /* UserModelDTO.swift */; };
 		82D55F6C273C668400C1E9B7 /* GithubAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82B56286273C533300E0ED75 /* GithubAppTests.swift */; };
 		82D55F70273C66AD00C1E9B7 /* URLSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82B5628D273C537A00E0ED75 /* URLSessionProtocol.swift */; };
@@ -68,14 +68,16 @@
 		8213F01627339FD300125B4C /* RepositoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryListViewController.swift; sourceTree = "<group>"; };
 		8213F01B27339FD500125B4C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8213F02027339FD500125B4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8236240F27422E83009D6D9B /* QueryItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryItems.swift; sourceTree = "<group>"; };
+		82362412274230E4009D6D9B /* EndPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPoint.swift; sourceTree = "<group>"; };
+		8236241727423DB5009D6D9B /* SearchRepositoriesUsecase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchRepositoriesUsecase.swift; sourceTree = "<group>"; };
 		8281BA7C27341524006D68C5 /* OwnerModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OwnerModel.swift; sourceTree = "<group>"; };
 		8281BA7D27341524006D68C5 /* RepositoriesModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepositoriesModel.swift; sourceTree = "<group>"; };
 		8281BA8227341572006D68C5 /* APIServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIServiceType.swift; sourceTree = "<group>"; };
 		8281BA842734171C006D68C5 /* Paths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Paths.swift; sourceTree = "<group>"; };
 		8281BA862734184D006D68C5 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		8281BA882734189B006D68C5 /* EndPointRepositories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPointRepositories.swift; sourceTree = "<group>"; };
-		8282A40D273944D4004B7D17 /* EndPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPoints.swift; sourceTree = "<group>"; };
-		8282A40F27394FE2004B7D17 /* EndPointAccessToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPointAccessToken.swift; sourceTree = "<group>"; };
+		8282A40D273944D4004B7D17 /* Host.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Host.swift; sourceTree = "<group>"; };
 		8282A41127395037004B7D17 /* EndPointManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPointManager.swift; sourceTree = "<group>"; };
 		8290468C2734E584005FD0AB /* RepositoryLayerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryLayerType.swift; sourceTree = "<group>"; };
 		8290468E2734E60D005FD0AB /* RepositoryLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryLayer.swift; sourceTree = "<group>"; };
@@ -99,10 +101,8 @@
 		82B56291273C54B800E0ED75 /* MockSessionDataTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSessionDataTask.swift; sourceTree = "<group>"; };
 		82CAF890273BF57200ED4A84 /* StarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarManager.swift; sourceTree = "<group>"; };
 		82CAF892273BF66000ED4A84 /* HttpMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpMethod.swift; sourceTree = "<group>"; };
-		82CAF894273BF89700ED4A84 /* StarEndPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarEndPoint.swift; sourceTree = "<group>"; };
 		82D52F3E27399337005A710D /* AccessTokenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenModel.swift; sourceTree = "<group>"; };
 		82D52F41273995FD005A710D /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
-		82D52F4327399F75005A710D /* EndPointUserRepo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPointUserRepo.swift; sourceTree = "<group>"; };
 		82D52F452739A36A005A710D /* UserModelDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModelDTO.swift; sourceTree = "<group>"; };
 		F368AB1849E3286C511066A6 /* Pods-GithubApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GithubApp.debug.xcconfig"; path = "Target Support Files/Pods-GithubApp/Pods-GithubApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -166,6 +166,7 @@
 		8213F01127339FD300125B4C /* GithubApp */ = {
 			isa = PBXGroup;
 			children = (
+				8236241627423D8D009D6D9B /* UseCase */,
 				82994C96273923B700BDB313 /* Scene */,
 				8290469C2735138E005FD0AB /* App */,
 				8281BA8027341555006D68C5 /* Service */,
@@ -178,6 +179,37 @@
 				8213F02027339FD500125B4C /* Info.plist */,
 			);
 			path = GithubApp;
+			sourceTree = "<group>";
+		};
+		82362414274239AC009D6D9B /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				8281BA8227341572006D68C5 /* APIServiceType.swift */,
+				8281BA862734184D006D68C5 /* APIService.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		8236241527423A05009D6D9B /* Endpoint */ = {
+			isa = PBXGroup;
+			children = (
+				82CAF892273BF66000ED4A84 /* HttpMethod.swift */,
+				82D52F41273995FD005A710D /* Client.swift */,
+				8282A40D273944D4004B7D17 /* Host.swift */,
+				8281BA842734171C006D68C5 /* Paths.swift */,
+				82362412274230E4009D6D9B /* EndPoint.swift */,
+				8282A41127395037004B7D17 /* EndPointManager.swift */,
+				8236240F27422E83009D6D9B /* QueryItems.swift */,
+			);
+			path = Endpoint;
+			sourceTree = "<group>";
+		};
+		8236241627423D8D009D6D9B /* UseCase */ = {
+			isa = PBXGroup;
+			children = (
+				8236241727423DB5009D6D9B /* SearchRepositoriesUsecase.swift */,
+			);
+			path = UseCase;
 			sourceTree = "<group>";
 		};
 		8281BA7B27341524006D68C5 /* Model */ = {
@@ -197,19 +229,11 @@
 		8281BA8027341555006D68C5 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				82362414274239AC009D6D9B /* Service */,
+				8236241527423A05009D6D9B /* Endpoint */,
 				82D55F73273C692000C1E9B7 /* ForTest */,
-				8281BA8227341572006D68C5 /* APIServiceType.swift */,
-				8281BA842734171C006D68C5 /* Paths.swift */,
-				8281BA862734184D006D68C5 /* APIService.swift */,
-				82D52F4327399F75005A710D /* EndPointUserRepo.swift */,
 				8281BA882734189B006D68C5 /* EndPointRepositories.swift */,
 				82994C9B2739325300BDB313 /* EndPointAuthorization.swift */,
-				8282A40D273944D4004B7D17 /* EndPoints.swift */,
-				8282A40F27394FE2004B7D17 /* EndPointAccessToken.swift */,
-				8282A41127395037004B7D17 /* EndPointManager.swift */,
-				82D52F41273995FD005A710D /* Client.swift */,
-				82CAF892273BF66000ED4A84 /* HttpMethod.swift */,
-				82CAF894273BF89700ED4A84 /* StarEndPoint.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -432,9 +456,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				82362413274230E4009D6D9B /* EndPoint.swift in Sources */,
 				82D55F70273C66AD00C1E9B7 /* URLSessionProtocol.swift in Sources */,
 				8297B2BE273B7AB9001DF314 /* LoginDelegate.swift in Sources */,
-				8282A41027394FE2004B7D17 /* EndPointAccessToken.swift in Sources */,
 				8213F01727339FD300125B4C /* RepositoryListViewController.swift in Sources */,
 				8290468D2734E584005FD0AB /* RepositoryLayerType.swift in Sources */,
 				82CAF893273BF66000ED4A84 /* HttpMethod.swift in Sources */,
@@ -454,19 +478,19 @@
 				829287692735B41200DA4077 /* RepositoryListCell.swift in Sources */,
 				8213F01527339FD300125B4C /* SceneDelegate.swift in Sources */,
 				82D52F3F27399337005A710D /* AccessTokenModel.swift in Sources */,
-				82CAF895273BF89700ED4A84 /* StarEndPoint.swift in Sources */,
 				82994C98273923EE00BDB313 /* Scene.swift in Sources */,
 				82D52F42273995FD005A710D /* Client.swift in Sources */,
+				8236241827423DB5009D6D9B /* SearchRepositoriesUsecase.swift in Sources */,
 				8281BA852734171C006D68C5 /* Paths.swift in Sources */,
-				82D52F4427399F75005A710D /* EndPointUserRepo.swift in Sources */,
 				829046A027351A56005FD0AB /* LoginViewController.swift in Sources */,
 				8290469E273513DB005FD0AB /* MainTabBarController.swift in Sources */,
 				8281BA872734184D006D68C5 /* APIService.swift in Sources */,
 				829287672735A89A00DA4077 /* ViewRatio.swift in Sources */,
+				8236241027422E83009D6D9B /* QueryItems.swift in Sources */,
 				8281BA7F27341524006D68C5 /* RepositoriesModel.swift in Sources */,
 				82994C95273920A700BDB313 /* ViewModelBindable.swift in Sources */,
 				82D55F71273C66D900C1E9B7 /* URLSessionStub.swift in Sources */,
-				8282A40E273944D4004B7D17 /* EndPoints.swift in Sources */,
+				8282A40E273944D4004B7D17 /* Host.swift in Sources */,
 				829ED0D3273AA641001D399B /* UserModel.swift in Sources */,
 				82994C9A2739242800BDB313 /* LoginViewModel.swift in Sources */,
 			);

@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum EndPoints: String {
+enum Host: String {
     case api = "api.github.com"
     case loginAuthorization = "github.com"
 }

@@ -9,9 +9,11 @@ import Foundation
 
 protocol EndPointManager {
     var scheme: String { get }
-    var host: EndPoints { get }
+    var host: String { get }
+    var path: String? { get }
     
-    init()
+    init(host: Host, path: Paths?)
     
-    func createValidURL(path: Paths, query: [URLQueryItem]) -> URL
+    func createValidURL(with query: QueryItems?) -> URL
 }
+

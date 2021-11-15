@@ -71,11 +71,10 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
     func initSearchButton() {
         self.searchButton.rx.tap
             .bind { [weak self] _ in
-                self?.viewModel.setCurretpage(value: 0)
                 guard let validText = self?.searchField.text, self?.searchField.text != "" else {
                     return
                 }
-                self?.viewModel.input.onNext([URLQueryItem(name: "q", value: validText)])
+                self?.viewModel.search(with: validText)
                 self?.listTableview.contentOffset = .zero
             }.disposed(by: self.disposeBag)
     }
@@ -141,7 +140,7 @@ extension RepositoryListViewController: UITableViewDelegate {
         let tableViewContentSize = listTableview.contentSize.height
         
         if contentOffsetY > tableViewContentSize - scrollView.frame.height {
-            self.viewModel.input.onNext([URLQueryItem(name: "q", value: self.searchField.text ?? "")])
+//            self.viewModel.input.onNext([URLQueryItem(name: "q", value: self.searchField.text ?? "")])
         }
     }
 }
