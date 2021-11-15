@@ -1,4 +1,4 @@
-# ios-29cm-test-settpark
+# githubApp
 
 ## 프로젝트 실행
 
