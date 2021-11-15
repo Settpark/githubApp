@@ -66,15 +66,22 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
         self.listTableview.rx
             .setDelegate(self)
             .disposed(by: self.disposeBag)
+        self.listTableview.rx
+            .didEndScrollingAnimation.bind { [weak self] _ in
+                self?.requestNextPage()
+            }.disposed(by: self.disposeBag)
     }
     
     func initSearchButton() {
+        self.searchField.rx.controlEvent(.editingDidEndOnExit)
+            .bind { [weak self] _ in
+                self?.viewModel.search(with: self?.searchField.text)
+                self?.listTableview.contentOffset = .zero
+            }.disposed(by: self.disposeBag)
+        
         self.searchButton.rx.tap
             .bind { [weak self] _ in
-                guard let validText = self?.searchField.text, self?.searchField.text != "" else {
-                    return
-                }
-                self?.viewModel.search(with: validText)
+                self?.viewModel.search(with: self?.searchField.text)
                 self?.listTableview.contentOffset = .zero
             }.disposed(by: self.disposeBag)
     }
@@ -111,6 +118,15 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
         initDataSource()
         initSearchButton()
     }
+    
+    func requestNextPage() {
+        let contentOffsetY = listTableview.contentOffset.y
+        let tableViewContentSize = listTableview.contentSize.height
+
+        if contentOffsetY > tableViewContentSize - listTableview.frame.height {
+            self.viewModel.requestNextpage()
+        }
+    }
 }
 
 extension RepositoryListViewController {
@@ -125,6 +141,7 @@ extension RepositoryListViewController {
             })
         
         self.viewModel.output
+            .observe(on: MainScheduler.instance)
             .bind(to: self.listTableview.rx.items(dataSource: self.listDataSource))
             .disposed(by: self.disposeBag)
     }
@@ -138,9 +155,9 @@ extension RepositoryListViewController: UITableViewDelegate {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         let contentOffsetY = scrollView.contentOffset.y
         let tableViewContentSize = listTableview.contentSize.height
-        
+
         if contentOffsetY > tableViewContentSize - scrollView.frame.height {
-//            self.viewModel.input.onNext([URLQueryItem(name: "q", value: self.searchField.text ?? "")])
+            self.viewModel.requestNextpage()
         }
     }
 }

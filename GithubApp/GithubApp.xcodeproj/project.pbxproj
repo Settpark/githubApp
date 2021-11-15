@@ -19,12 +19,11 @@
 		8281BA8327341572006D68C5 /* APIServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8281BA8227341572006D68C5 /* APIServiceType.swift */; };
 		8281BA852734171C006D68C5 /* Paths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8281BA842734171C006D68C5 /* Paths.swift */; };
 		8281BA872734184D006D68C5 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8281BA862734184D006D68C5 /* APIService.swift */; };
-		8281BA892734189B006D68C5 /* EndPointRepositories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8281BA882734189B006D68C5 /* EndPointRepositories.swift */; };
 		8282A40E273944D4004B7D17 /* Host.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8282A40D273944D4004B7D17 /* Host.swift */; };
 		8282A41227395037004B7D17 /* EndPointManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8282A41127395037004B7D17 /* EndPointManager.swift */; };
 		8290468D2734E584005FD0AB /* RepositoryLayerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8290468C2734E584005FD0AB /* RepositoryLayerType.swift */; };
 		8290468F2734E60D005FD0AB /* RepositoryLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8290468E2734E60D005FD0AB /* RepositoryLayer.swift */; };
-		829046912734EA11005FD0AB /* SearchResult.swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829046902734EA11005FD0AB /* SearchResult.swift.swift */; };
+		829046912734EA11005FD0AB /* RepositoriesModelDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829046902734EA11005FD0AB /* RepositoriesModelDTO.swift */; };
 		8290469E273513DB005FD0AB /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8290469D273513DB005FD0AB /* MainTabBarController.swift */; };
 		829046A027351A56005FD0AB /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8290469F27351A56005FD0AB /* LoginViewController.swift */; };
 		829287672735A89A00DA4077 /* ViewRatio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829287662735A89A00DA4077 /* ViewRatio.swift */; };
@@ -76,12 +75,11 @@
 		8281BA8227341572006D68C5 /* APIServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIServiceType.swift; sourceTree = "<group>"; };
 		8281BA842734171C006D68C5 /* Paths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Paths.swift; sourceTree = "<group>"; };
 		8281BA862734184D006D68C5 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
-		8281BA882734189B006D68C5 /* EndPointRepositories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPointRepositories.swift; sourceTree = "<group>"; };
 		8282A40D273944D4004B7D17 /* Host.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Host.swift; sourceTree = "<group>"; };
 		8282A41127395037004B7D17 /* EndPointManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPointManager.swift; sourceTree = "<group>"; };
 		8290468C2734E584005FD0AB /* RepositoryLayerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryLayerType.swift; sourceTree = "<group>"; };
 		8290468E2734E60D005FD0AB /* RepositoryLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryLayer.swift; sourceTree = "<group>"; };
-		829046902734EA11005FD0AB /* SearchResult.swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResult.swift.swift; sourceTree = "<group>"; };
+		829046902734EA11005FD0AB /* RepositoriesModelDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoriesModelDTO.swift; sourceTree = "<group>"; };
 		8290469D273513DB005FD0AB /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		8290469F27351A56005FD0AB /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		829287662735A89A00DA4077 /* ViewRatio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewRatio.swift; sourceTree = "<group>"; };
@@ -166,12 +164,12 @@
 		8213F01127339FD300125B4C /* GithubApp */ = {
 			isa = PBXGroup;
 			children = (
-				8236241627423D8D009D6D9B /* UseCase */,
 				82994C96273923B700BDB313 /* Scene */,
 				8290469C2735138E005FD0AB /* App */,
 				8281BA8027341555006D68C5 /* Service */,
 				8290468B2734E51C005FD0AB /* Repository */,
 				8281BA7B27341524006D68C5 /* Model */,
+				8236241627423D8D009D6D9B /* UseCase */,
 				82ACC6592736504F00AAE27A /* ViewModel */,
 				8290469B2735136F005FD0AB /* ViewController */,
 				829046922734F002005FD0AB /* View */,
@@ -217,7 +215,7 @@
 			children = (
 				8281BA7C27341524006D68C5 /* OwnerModel.swift */,
 				8281BA7D27341524006D68C5 /* RepositoriesModel.swift */,
-				829046902734EA11005FD0AB /* SearchResult.swift.swift */,
+				829046902734EA11005FD0AB /* RepositoriesModelDTO.swift */,
 				82ACC65727363C3700AAE27A /* RepositorySectionModel.swift */,
 				82D52F3E27399337005A710D /* AccessTokenModel.swift */,
 				82D52F452739A36A005A710D /* UserModelDTO.swift */,
@@ -232,7 +230,6 @@
 				82362414274239AC009D6D9B /* Service */,
 				8236241527423A05009D6D9B /* Endpoint */,
 				82D55F73273C692000C1E9B7 /* ForTest */,
-				8281BA882734189B006D68C5 /* EndPointRepositories.swift */,
 				82994C9B2739325300BDB313 /* EndPointAuthorization.swift */,
 			);
 			path = Service;
@@ -472,8 +469,7 @@
 				8213F01327339FD300125B4C /* AppDelegate.swift in Sources */,
 				82994C9C2739325300BDB313 /* EndPointAuthorization.swift in Sources */,
 				8290468F2734E60D005FD0AB /* RepositoryLayer.swift in Sources */,
-				8281BA892734189B006D68C5 /* EndPointRepositories.swift in Sources */,
-				829046912734EA11005FD0AB /* SearchResult.swift.swift in Sources */,
+				829046912734EA11005FD0AB /* RepositoriesModelDTO.swift in Sources */,
 				8282A41227395037004B7D17 /* EndPointManager.swift in Sources */,
 				829287692735B41200DA4077 /* RepositoryListCell.swift in Sources */,
 				8213F01527339FD300125B4C /* SceneDelegate.swift in Sources */,

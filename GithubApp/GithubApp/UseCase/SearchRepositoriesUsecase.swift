@@ -10,18 +10,27 @@ import RxSwift
 
 class SearchRepositoriesUsecase {
     
-    private let repository: RepositoryLayer
+    private let repository: RepositoryLayerType
     
-    init(repositoryLayer: RepositoryLayer) {
+    init(repositoryLayer: RepositoryLayerType) {
         self.repository = repositoryLayer
     }
     
     func requestRepositories(value: String) -> Observable<[RepositoriesModel]> {
+        self.repository.clearSearchResult()
         let query = QueryItems()
         query.addQuery(newKey: "q", newElement: value)
-        query.addQuery(newKey: "per_page", newElement: "\(30)")
-        query.addQuery(newKey: "page", newElement: "0")
-        return repository.requestRepositoryList(type: SearchResult.self, query: query)
+        query.addQuery(newKey: "per_page", newElement: "\(15)")
+        return repository.requestRepositoryList(query: query)
+            .map { return $0.items }
+    }
+    
+    func requestNextRepositories(value: String, page: Int) -> Observable<[RepositoriesModel]> {
+        let query = QueryItems()
+        query.addQuery(newKey: "q", newElement: value)
+        query.addQuery(newKey: "per_page", newElement: "\(15)")
+        query.addQuery(newKey: "page", newElement: "\(page)")
+        return repository.requestRepositoryList(query: query)
             .map { return $0.items }
     }
 }

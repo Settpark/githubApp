@@ -11,20 +11,24 @@ import RxCocoa
 
 final class RepositoryLayer: RepositoryLayerType {
     private let apiService: APIServiceType
-    private var repoListsRepository: [RepositoriesModel]
+    private var searchResultList: RepositoriesModelDTO
     
     init(apiService: APIServiceType) {
         self.apiService = apiService
-        self.repoListsRepository = []
+        self.searchResultList = RepositoriesModelDTO(items: [])
     }
     
-    func requestRepositoryList<T: Decodable>(type: T.Type, query: QueryItems) -> Observable<T> {
-        return apiService.requestRepositories(type: type, query: query)
-            .do { print($0) }
-//            .map { [weak self] searchresult in
-//                searchresult.items.forEach { self?.repoListsRepository.append($0) }
-//                return self?.repoListsRepository ?? []
-//            }
+    func requestRepositoryList(query: QueryItems) -> Observable<RepositoriesModelDTO> {
+        return apiService.requestRepositories(type: RepositoriesModelDTO.self, query: query)
+            .do(onNext:  { [weak self] DTO in
+                self?.searchResultList.additems(items: DTO.items)
+            }).map { [weak self] data in
+                return self?.searchResultList ?? data
+            }
+    }
+    
+    func clearSearchResult() {
+        self.searchResultList.items.removeAll()
     }
     
     func starUserrepo(path: Paths, query: [URLQueryItem], method: HttpMethod) -> Observable<Int> {
@@ -48,6 +52,6 @@ final class RepositoryLayer: RepositoryLayerType {
     }
     
     func clearRepositories() {
-        self.repoListsRepository.removeAll()
+//        self.repoListsRepository.removeAll()
     }
 }
