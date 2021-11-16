@@ -95,13 +95,13 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
             }.disposed(by: disposeBag)
     }
     
-    func initLoginToken() {
-        self.loginDelegate?.loginToken
-            .bind{
-                self.viewModel.inputToken.onNext($0)
-            }
-            .disposed(by: self.disposeBag)
-    }
+//    func initLoginToken() {
+//        self.loginDelegate?.loginToken
+//            .bind {
+//                //
+//            }
+//            .disposed(by: self.disposeBag)
+//    }
     
     func changeTitleView() {
         self.loginDelegate?.isLogin.bind { [weak self] islogin in
@@ -169,7 +169,7 @@ extension RepositoryListViewController: StarManager {
         }
         let userName = URLQueryItem(name: "owner", value: owner)
         let userRepo = URLQueryItem(name: "repo", value: repo)
-        return self.viewModel.checkStaredUserRepo(path: .star, query: [userName, userRepo], method: .get)
+        return self.viewModel.checkStaredUserRepo(path: .Star, query: [userName, userRepo], method: .get)
     }
     
     func unstarRespository(owner: String, repo: String) {
@@ -178,7 +178,7 @@ extension RepositoryListViewController: StarManager {
         }
         let userName = URLQueryItem(name: "owner", value: owner)
         let userRepo = URLQueryItem(name: "repo", value: repo)
-        self.viewModel.starUserRepo(path: .star, query: [userName, userRepo], method: .delete)
+        self.viewModel.starUserRepo(path: .Star, query: [userName, userRepo], method: .delete)
     }
     
     func starRepository(owner: String, repo: String) {
@@ -187,7 +187,7 @@ extension RepositoryListViewController: StarManager {
         }
         let userName = URLQueryItem(name: "owner", value: owner)
         let userRepo = URLQueryItem(name: "repo", value: repo)
-        self.viewModel.starUserRepo(path: .star, query: [userName, userRepo], method: .put)
+        self.viewModel.starUserRepo(path: .Star, query: [userName, userRepo], method: .put)
     }
 }
 

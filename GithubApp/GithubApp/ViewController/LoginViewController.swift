@@ -10,14 +10,16 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 
-final class LoginViewController: UIViewController, ViewModelBindable, LoginDelegate {
+final class LoginViewController: UIViewController, ViewModelBindable {
     
     
     private let disposeBag: DisposeBag
+    var viewModel: LoginViewModel!
     
     private let titleView: UIView
     private let titleLabel: UILabel
     private let titleLoginButton: UIButton
+    private let titleLogoutButton: UIButton
     private let loginLabel: UILabel
     private let centerLoginButton: UIButton
     private let userInfoview: UIStackView
@@ -26,26 +28,20 @@ final class LoginViewController: UIViewController, ViewModelBindable, LoginDeleg
     private let userRepositoriesList: UITableView
     private var listDataSource: RxTableViewSectionedReloadDataSource<RepositoryListSectionData>!
     
-    var viewModel: LoginViewModel!
-    var isLogin: BehaviorRelay<Bool>
-    var loginToken: PublishSubject<AccessTokenModel>
-    
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         self.disposeBag = DisposeBag()
         self.titleView = UIView()
         self.titleLabel = UILabel()
         self.titleLoginButton = UIButton()
+        self.titleLogoutButton = UIButton()
         self.loginLabel = UILabel()
         self.centerLoginButton = UIButton()
         self.userInfoview = UIStackView()
         self.userInfoview.alignment = .leading
-        self.userInfoview.distribution = .fill
-        self.userInfoview.spacing = 10
+        self.userInfoview.distribution = .equalSpacing
         self.userImage = UIImageView()
         self.userName = UILabel()
         self.userRepositoriesList = UITableView()
-        self.isLogin = BehaviorRelay<Bool>(value: false)
-        self.loginToken = PublishSubject<AccessTokenModel>()
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -53,64 +49,60 @@ final class LoginViewController: UIViewController, ViewModelBindable, LoginDeleg
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.view.backgroundColor = .white
-        self.addSubviews()
+    override func updateViewConstraints() {
+        super.updateViewConstraints()
     }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        self.drawViews()
+        drawViews()
     }
     
-    func Login(state: Bool) {
-        if !state {
-            let endpoint = EndPointAuthorization.init()
-//            let url = endpoint.createValidURL(path: .LoginPath, query: [])
-//            UIApplication.shared.open(url)
-        } else {
-            self.isLogin.accept(false)
-//            self.loginToken.onNext(nil)
-        }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.view.backgroundColor = .white
+        addSubviews()
     }
     
     func bindViewModel() {
-        self.initLoginButton()
-        self.bindUserinfo()
         self.initTableview()
         self.initDataSource()
-        self.initDrawOption()
+        self.initLoginoutButton()
+        self.bindDrawElements()
     }
     
-    func initLoginButton() {
-//        self.centerLoginButton.rx.tap
-//            .map {
-//                return self.isLogin.value
-//            }.bind { [weak self] state in
-//                self?.Login(state: state)
-//            }.disposed(by: self.disposeBag)
-//
-//        self.titleLoginButton.rx.tap
-//            .map { [unowned self] _ -> Bool in
-//                return self.isLogin.value
-//            }.bind { [weak self] state in
-//                self?.Login(state: state)
-//            }.disposed(by: self.disposeBag)
-    }
-    
-    func requestAccessToken(url: URL) -> Void {
-        let code = url.absoluteString.components(separatedBy: "code=").last ?? ""
-        let accessCode = URLQueryItem.init(name: "code", value: code)
-        self.isLogin.accept(true)
-        self.viewModel.getAceessToken(path: .AccessToken, query: [accessCode])
-            .bind { [weak self] token in
-                self?.loginToken.onNext(token)
+    func initLoginoutButton() {
+        self.centerLoginButton.rx.tap
+            .bind { [weak self] _ in
+                guard let window = self?.view.window else { return }
+                self?.viewModel.login(in: window)
+            }.disposed(by: self.disposeBag)
+        
+        self.titleLoginButton.rx.tap
+            .bind { [weak self] _ in
+                guard let window = self?.view.window else { return }
+                self?.viewModel.login(in: window)
+            }.disposed(by: self.disposeBag)
+        
+        self.titleLogoutButton.rx.tap
+            .bind { [weak self] _ in
+                self?.viewModel.logout()
             }.disposed(by: self.disposeBag)
     }
     
-    func initDrawOption() {
-        self.isLogin
+    //    func requestAccessToken(url: URL) -> Void {
+    //        let code = url.absoluteString.components(separatedBy: "code=").last ?? ""
+    //        let accessCode = URLQueryItem.init(name: "code", value: code)
+    //        self.isLogin.accept(true)
+    //        self.viewModel.getAceessToken(path: .AccessToken, query: [accessCode])
+    //            .bind { [weak self] token in
+    //                self?.loginToken.onNext(token)
+    //            }.disposed(by: self.disposeBag)
+    //    }
+    
+    func bindDrawElements() {
+        self.viewModel.isLogin()
+            .observe(on: MainScheduler.instance)
             .bind { [weak self] state in
                 self?.drawLoginView(currentState: state)
             }.disposed(by: self.disposeBag)
@@ -123,19 +115,18 @@ final class LoginViewController: UIViewController, ViewModelBindable, LoginDeleg
                 self?.userName.text = title.login
             }.disposed(by: disposeBag)
         
-        self.viewModel.outputUserinfo
-            .flatMap { [unowned self] image in
-                return self.viewModel.requestUserimage(url: image.avatarUrl ?? "")
-            }.observe(on: MainScheduler.instance)
-            .bind { [weak self] data in
-                self?.userImage.image = UIImage(data: data)
-            }.disposed(by: self.disposeBag)
-        
-        self.loginToken
-            .bind { [weak self] token in
-                self?.viewModel.inputToken.onNext(token)
-            }
-            .disposed(by: self.disposeBag)
+        //        self.viewModel.outputUserinfo
+        //            .flatMap { [unowned self] image in
+        //                return self.viewModel.requestUserimage(url: image.avatarUrl ?? "")
+        //            }.observe(on: MainScheduler.instance)
+        //            .bind { [weak self] data in
+        //                self?.userImage.image = UIImage(data: data)
+        //            }.disposed(by: self.disposeBag)
+        //
+        //        self.loginToken
+        //            .bind { [weak self] token in
+        //                self?.viewModel.inputToken.onNext(token)
+        //            }.disposed(by: self.disposeBag)
     }
     
     func initTableview() {
@@ -148,16 +139,15 @@ final class LoginViewController: UIViewController, ViewModelBindable, LoginDeleg
 
 extension LoginViewController {
     func drawLoginView(currentState: Bool) {
-        self.view.subviews.forEach { view in
-            view.isHidden = true
-        }
+        self.view.subviews.forEach { $0.isHidden = true }
         self.titleView.isHidden = false
-        self.drawLogin(state: currentState)
+        self.titleView.subviews.forEach { $0.isHidden = true }
         if !currentState {
+            self.titleLoginButton.isHidden = false
             self.centerLoginButton.isHidden = false
             self.loginLabel.isHidden = false
-        }
-        else {
+        } else {
+            self.titleLogoutButton.isHidden = false
             self.userInfoview.isHidden = false
             self.userRepositoriesList.isHidden = false
             self.userImage.isHidden = false
@@ -222,7 +212,6 @@ extension LoginViewController {
         self.titleView.widthAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.widthAnchor).isActive = true
         self.titleView.heightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.heightAnchor, multiplier: ViewRatio.topViewHeightRatio.rawValue).isActive = true
         
-        
         self.titleLabel.text = "Github"
         self.titleLabel.font = .systemFont(ofSize: 17)
         self.titleLabel.sizeToFit()
@@ -230,11 +219,17 @@ extension LoginViewController {
         self.titleLabel.centerXAnchor.constraint(equalTo: self.titleView.centerXAnchor).isActive = true
         self.titleLabel.centerYAnchor.constraint(equalTo: self.titleView.centerYAnchor).isActive = true
         
+        self.titleLoginButton.setTitle("로그인", for: .normal)
         self.titleLoginButton.sizeToFit()
         self.titleLoginButton.translatesAutoresizingMaskIntoConstraints = false
         self.titleLoginButton.centerYAnchor.constraint(equalTo: self.titleView.centerYAnchor).isActive = true
         self.titleLoginButton.trailingAnchor.constraint(equalTo: self.titleView.trailingAnchor, constant: -10).isActive = true
         
+        self.titleLogoutButton.setTitle("로그아웃", for: .normal)
+        self.titleLogoutButton.sizeToFit()
+        self.titleLogoutButton.translatesAutoresizingMaskIntoConstraints = false
+        self.titleLogoutButton.centerYAnchor.constraint(equalTo: self.titleView.centerYAnchor).isActive = true
+        self.titleLogoutButton.trailingAnchor.constraint(equalTo: self.titleView.trailingAnchor, constant: -10).isActive = true
     }
     
     func addSubviews() {
@@ -243,6 +238,7 @@ extension LoginViewController {
         self.view.addSubview(self.titleView)
         self.titleView.addSubview(self.titleLabel)
         self.titleView.addSubview(self.titleLoginButton)
+        self.titleView.addSubview(self.titleLogoutButton)
         self.view.addSubview(self.userRepositoriesList)
         self.view.addSubview(userInfoview)
         self.userInfoview.addArrangedSubview(self.userImage)
@@ -256,14 +252,6 @@ extension LoginViewController {
         self.drawListTableView()
         self.drawUserInfo()
         self.drawTitleView()
-    }
-    
-    func drawLogin(state: Bool) {
-        if !state {
-            self.titleLoginButton.setTitle("로그인", for: .normal)
-        } else {
-            self.titleLoginButton.setTitle("로그아웃", for: .normal)
-        }
     }
 }
 
@@ -290,31 +278,43 @@ extension LoginViewController {
 }
 
 extension LoginViewController: StarManager {
-    func checkStarRepository(owner: String, repo: String) -> Observable<Bool?> {
-        if !(self.isLogin.value) {
-            return Observable.just(nil)
-        }
-        
-        let userName = URLQueryItem(name: "owner", value: owner)
-        let userRepo = URLQueryItem(name: "repo", value: repo)
-        return self.viewModel.checkStaredUserRepo(path: .star, query: [userName, userRepo], method: .get)
+    func starRepository(owner: String, repo: String) {
+        //
     }
     
     func unstarRespository(owner: String, repo: String) {
-        if !self.isLogin.value {
-            return
-        }
-        let userName = URLQueryItem(name: "owner", value: owner)
-        let userRepo = URLQueryItem(name: "repo", value: repo)
-        self.viewModel.starUserRepo(path: .star, query: [userName, userRepo], method: .delete)
+        //
     }
     
-    func starRepository(owner: String, repo: String) {
-        if !self.isLogin.value {
-            return
-        }
-        let userName = URLQueryItem(name: "owner", value: owner)
-        let userRepo = URLQueryItem(name: "repo", value: repo)
-        self.viewModel.starUserRepo(path: .star, query: [userName, userRepo], method: .put)
+    func checkStarRepository(owner: String, repo: String) -> Observable<Bool?> {
+        Observable.just(false)
     }
+    
+    //    func checkStarRepository(owner: String, repo: String) -> Observable<Bool?> {
+    //        if !(self.isLogin.value) {
+    //            return Observable.just(nil)
+    //        }
+    //
+    //        let userName = URLQueryItem(name: "owner", value: owner)
+    //        let userRepo = URLQueryItem(name: "repo", value: repo)
+    //        return self.viewModel.checkStaredUserRepo(path: .Star, query: [userName, userRepo], method: .get)
+    //    }
+    //
+    //    func unstarRespository(owner: String, repo: String) {
+    //        if !self.isLogin.value {
+    //            return
+    //        }
+    //        let userName = URLQueryItem(name: "owner", value: owner)
+    //        let userRepo = URLQueryItem(name: "repo", value: repo)
+    //        self.viewModel.starUserRepo(path: .Star, query: [userName, userRepo], method: .delete)
+    //    }
+    //
+    //    func starRepository(owner: String, repo: String) {
+    //        if !self.isLogin.value {
+    //            return
+    //        }
+    //        let userName = URLQueryItem(name: "owner", value: owner)
+    //        let userRepo = URLQueryItem(name: "repo", value: repo)
+    //        self.viewModel.starUserRepo(path: .Star, query: [userName, userRepo], method: .put)
+    //    }
 }

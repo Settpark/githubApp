@@ -8,13 +8,7 @@
 import Foundation
 import RxSwift
 
-class SearchRepositoriesUsecase {
-    
-    private let repository: RepositoryLayerType
-    
-    init(repositoryLayer: RepositoryLayerType) {
-        self.repository = repositoryLayer
-    }
+class SearchRepositoriesUsecase: CommonUsecase {
     
     func requestRepositories(value: String) -> Observable<[RepositoriesModel]> {
         self.repository.clearSearchResult()

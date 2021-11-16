@@ -14,10 +14,6 @@ final class APIService: APIServiceType {
         return Observable.just("" as! T)
     }
     
-    func requestAccessToken<T>(type: T.Type, query: QueryItems) -> Observable<T> where T : Decodable {
-        return Observable.just("" as! T)
-    }
-    
     func requestUserData<T>(type: T.Type, token: QueryItems) -> Observable<T> where T : Decodable {
         return Observable.just("" as! T)
     }
@@ -47,34 +43,16 @@ final class APIService: APIServiceType {
         return requestDataWithRx(type: type, with: request)
     }
     
-//    func starUserrepo(token: QueryItems, method: HttpMethod) -> Observable<(response: HTTPURLResponse, data: Data)> {
-//        let endPoint = EndPoint(host: .api, path: .star)
-//        let url = endPoint.createValidURL(with: token)
-//
-//        var request = URLRequest.init(url: url)
-//        request.httpMethod = method.rawValue
-//        request.addValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
-//        if let validToken = token[2].value {
-//            let tokenAddHeader = token[2].name + " " + validToken
-//            request.addValue(tokenAddHeader, forHTTPHeaderField: "Authorization")
-//        }
-//        return URLSession.shared.rx.response(request: request)
-//    }
-    
-    func requestAccessToken<T: Decodable>(type: T.Type, path: Paths, query: [URLQueryItem]) -> Observable<T> {
-//        let endPoint = EndPointAccessToken()
-//        let url = endPoint.createValidURL(path: path, query: query)
-//
-//        var request = URLRequest.init(url: url)
-//        request.addValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
-//        request.httpMethod = HttpMethod.post.rawValue
-//        return URLSession.shared.rx.data(request: request)
-//            .flatMap { data in
-//                return self.decodedData(type: type, data: data)
-//            }
-        return Observable.just("" as! T)
+    func requestAccessToken<T: Decodable>(type: T.Type, query: QueryItems) -> Observable<T> {
+        let endPoint = EndPoint.init(host: .loginAuthorization, path: .AccessTokenPath)
+        let validURL = endPoint.createValidURL(with: query)
+        var request = URLRequest(url: validURL)
+        
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        
+        return self.requestDataWithRx(type: type, with: request)
     }
-    
+        
     func requestUserData<T: Decodable>(type: T.Type, path: Paths, token: [URLQueryItem]) -> Observable<T> {
 //        let endPoint = EndPointUserRepo()
 //        let url = endPoint.createValidURL(path: path, query: token)

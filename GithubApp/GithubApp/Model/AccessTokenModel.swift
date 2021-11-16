@@ -7,10 +7,12 @@
 
 import Foundation
 
-struct AccessTokenModel: Decodable {
+struct AccessTokenModel: Codable {
     let accessToken: String?
     let scope: String?
     let tokenType: String?
+    
+    static var empty = Self.init()
     
     init() {
         self.accessToken = nil

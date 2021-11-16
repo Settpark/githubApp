@@ -35,10 +35,10 @@ final class MainTabBarController: UITabBarController {
     }
     
     func sendAccessCode(url: URL) {
-        guard let loginViewController = self.viewControllers?[1] as? LoginViewController else {
-            return
-        }
-        loginViewController.requestAccessToken(url: url)
+//        guard let loginViewController = self.viewControllers?[1] as? LoginViewController else {
+//            return
+//        }
+//        loginViewController.requestAccessToken(url: url)
     }
     
     func setLoginDelegateRepoController() {
@@ -47,8 +47,8 @@ final class MainTabBarController: UITabBarController {
                   return
               }
         if repoViewController.loginDelegate == nil {
-            repoViewController.loginDelegate = loginViewController
-            repoViewController.initLoginToken()
+//            repoViewController.loginDelegate = loginViewController
+            //repoViewController.initLoginToken()
             repoViewController.initLoginButton()
         }
     }
