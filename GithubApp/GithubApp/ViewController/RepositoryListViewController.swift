@@ -13,13 +13,14 @@ import RxDataSources
 final class RepositoryListViewController: UIViewController, ViewModelBindable {
     
     var viewModel: RepositoryListViewModel!
-    weak var loginDelegate: LoginDelegate?
+    private weak var loginDelegate: LoginDelegate?
     private var disposeBag: DisposeBag
     private var listDataSource: RxTableViewSectionedReloadDataSource<RepositoryListSectionData>!
     
     private let titleView: UIView
     private let titleLabel: UILabel
     private let titleLoginButton: UIButton
+    private let titleLogoutButton: UIButton
     private let searchButton: UIButton
     private let listTableview: UITableView
     private let searchField: UITextField
@@ -29,6 +30,7 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
         self.titleView = UIView()
         self.titleLabel = UILabel()
         self.titleLoginButton = UIButton()
+        self.titleLogoutButton = UIButton()
         self.listTableview = UITableView()
         self.searchButton = UIButton()
         self.searchField = UITextField()
@@ -36,14 +38,12 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
     }
     
     required init?(coder: NSCoder) {
-        self.disposeBag = DisposeBag()
-        self.titleView = UIView()
-        self.titleLabel = UILabel()
-        self.titleLoginButton = UIButton()
-        self.listTableview = UITableView()
-        self.searchButton = UIButton()
-        self.searchField = UITextField()
-        super.init(coder: coder)
+        fatalError()
+    }
+    
+    convenience init(delegate: LoginDelegate) {
+        self.init(nibName: nil, bundle: nil)
+        self.loginDelegate = delegate
     }
     
     override func viewDidLoad() {
@@ -58,7 +58,6 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
         self.drawSearchfield(constraint: self.titleView)
         self.drawSearchbutton(constraint: self.searchField)
         self.drawTableview(constraint: self.searchField)
-        self.changeTitleView()
     }
     
     func initTableview() {
@@ -87,36 +86,38 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
     }
     
     func initLoginButton() {
+        self.loginDelegate?.islogin()
+            .asDriver()
+            .drive { [weak self] state in
+                self?.drawLoginButton(state: state)
+            }.disposed(by: self.disposeBag)
+        
         self.titleLoginButton.rx.tap
-            .map { [unowned self] _ -> Bool in
-                return (self.loginDelegate?.isLogin.value)!
-            }.bind { [weak self] state in
-                self?.loginDelegate?.Login(state: state)
-            }.disposed(by: disposeBag)
+            .bind { [weak self] _ in
+                self?.loginDelegate?.login(window: self?.view.window)
+            }.disposed(by: self.disposeBag)
+        
+        self.titleLogoutButton.rx.tap
+            .bind { [weak self] _ in
+                self?.loginDelegate?.logout()
+            }.disposed(by: self.disposeBag)
     }
     
-//    func initLoginToken() {
-//        self.loginDelegate?.loginToken
-//            .bind {
-//                //
-//            }
-//            .disposed(by: self.disposeBag)
-//    }
-    
-    func changeTitleView() {
-        self.loginDelegate?.isLogin.bind { [weak self] islogin in
-            if !islogin {
-                self?.titleLoginButton.setTitle("로그인", for: .normal)
-            } else {
-                self?.titleLoginButton.setTitle("로그아웃", for: .normal)
-            }
-        }.disposed(by: self.disposeBag)
+    func drawLoginButton(state: Bool) {
+        if state {
+            self.titleLoginButton.isHidden = true
+            self.titleLogoutButton.isHidden = false
+        } else {
+            self.titleLoginButton.isHidden = false
+            self.titleLogoutButton.isHidden = true
+        }
     }
     
     func bindViewModel() {
         initTableview()
         initDataSource()
         initSearchButton()
+        initLoginButton()
     }
     
     func requestNextPage() {
@@ -133,10 +134,10 @@ extension RepositoryListViewController {
     private func initDataSource() {
         self.listDataSource = RxTableViewSectionedReloadDataSource<RepositoryListSectionData>(
             configureCell: { dataSource, tableView, indexPath, item in
-                guard let cell: RepositoryListCell = tableView.dequeueReusableCell(withIdentifier: RepositoryListCell.cellIdentifier, for: indexPath) as? RepositoryListCell else {
+                guard let cell: RepositoryListCell = tableView.dequeueReusableCell(withIdentifier: RepositoryListCell.cellIdentifier, for: indexPath) as? RepositoryListCell, let delegate = self.loginDelegate else {
                     return UITableViewCell()
                 }
-                cell.configureCell(with: item, buttonDelegate: self)
+                cell.configureCell(with: item, buttonDelegate: delegate)
                 return cell
             })
         
@@ -159,20 +160,6 @@ extension RepositoryListViewController: UITableViewDelegate {
         if contentOffsetY > tableViewContentSize - scrollView.frame.height {
             self.viewModel.requestNextpage()
         }
-    }
-}
-
-extension RepositoryListViewController: StarDelegate {
-    func starRepository(owner: String, repo: String) -> Observable<Void> {
-        return Observable<Void>.just(())
-    }
-    
-    func unstarRepository(owner: String, repo: String) -> Observable<Void> {
-        return Observable<Void>.just(())
-    }
-    
-    func checkStarRepository(owner: String, repo: String) -> Observable<Bool> {
-        return Observable.just(false)
     }
 }
 
@@ -228,15 +215,23 @@ extension RepositoryListViewController {
         self.titleLabel.centerYAnchor.constraint(equalTo: self.titleView.centerYAnchor).isActive = true
         
         self.titleLoginButton.sizeToFit()
+        self.titleLoginButton.setTitle("로그인", for: .normal)
         self.titleLoginButton.translatesAutoresizingMaskIntoConstraints = false
         self.titleLoginButton.centerYAnchor.constraint(equalTo: self.titleView.centerYAnchor).isActive = true
         self.titleLoginButton.trailingAnchor.constraint(equalTo: self.titleView.trailingAnchor, constant: -10).isActive = true
+        
+        self.titleLogoutButton.sizeToFit()
+        self.titleLogoutButton.setTitle("로그아웃", for: .normal)
+        self.titleLogoutButton.translatesAutoresizingMaskIntoConstraints = false
+        self.titleLogoutButton.centerYAnchor.constraint(equalTo: self.titleView.centerYAnchor).isActive = true
+        self.titleLogoutButton.trailingAnchor.constraint(equalTo: self.titleView.trailingAnchor, constant: -10).isActive = true
     }
     
     func addSubviews() {
         self.view.addSubview(self.titleView)
         self.titleView.addSubview(self.titleLabel)
         self.titleView.addSubview(self.titleLoginButton)
+        self.titleView.addSubview(self.titleLogoutButton)
         self.view.addSubview(self.searchField)
         self.view.addSubview(self.searchButton)
         self.view.addSubview(self.listTableview)

@@ -28,7 +28,6 @@
 		829046A027351A56005FD0AB /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8290469F27351A56005FD0AB /* LoginViewController.swift */; };
 		829287672735A89A00DA4077 /* ViewRatio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829287662735A89A00DA4077 /* ViewRatio.swift */; };
 		829287692735B41200DA4077 /* RepositoryListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829287682735B41200DA4077 /* RepositoryListCell.swift */; };
-		8297B2BE273B7AB9001DF314 /* LoginDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8297B2BD273B7AB9001DF314 /* LoginDelegate.swift */; };
 		82994C95273920A700BDB313 /* ViewModelBindable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82994C94273920A700BDB313 /* ViewModelBindable.swift */; };
 		82994C98273923EE00BDB313 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82994C97273923EE00BDB313 /* Scene.swift */; };
 		82994C9A2739242800BDB313 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82994C992739242800BDB313 /* LoginViewModel.swift */; };
@@ -42,7 +41,7 @@
 		829ED0D3273AA641001D399B /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 829ED0D2273AA641001D399B /* UserModel.swift */; };
 		82ACC65827363C3700AAE27A /* RepositorySectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82ACC65727363C3700AAE27A /* RepositorySectionModel.swift */; };
 		82ACC65B2736506800AAE27A /* RepositoryListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82ACC65A2736506800AAE27A /* RepositoryListViewModel.swift */; };
-		82CAF891273BF57200ED4A84 /* StarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CAF890273BF57200ED4A84 /* StarManager.swift */; };
+		82CAF891273BF57200ED4A84 /* LoginDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CAF890273BF57200ED4A84 /* LoginDelegate.swift */; };
 		82CAF893273BF66000ED4A84 /* HttpMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CAF892273BF66000ED4A84 /* HttpMethod.swift */; };
 		82D52F3F27399337005A710D /* AccessTokenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D52F3E27399337005A710D /* AccessTokenModel.swift */; };
 		82D52F42273995FD005A710D /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D52F41273995FD005A710D /* Client.swift */; };
@@ -90,7 +89,6 @@
 		8290469F27351A56005FD0AB /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		829287662735A89A00DA4077 /* ViewRatio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewRatio.swift; sourceTree = "<group>"; };
 		829287682735B41200DA4077 /* RepositoryListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryListCell.swift; sourceTree = "<group>"; };
-		8297B2BD273B7AB9001DF314 /* LoginDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDelegate.swift; sourceTree = "<group>"; };
 		82994C94273920A700BDB313 /* ViewModelBindable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelBindable.swift; sourceTree = "<group>"; };
 		82994C97273923EE00BDB313 /* Scene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
 		82994C992739242800BDB313 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
@@ -109,7 +107,7 @@
 		82B5628D273C537A00E0ED75 /* URLSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionProtocol.swift; sourceTree = "<group>"; };
 		82B5628F273C545D00E0ED75 /* URLSessionStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionStub.swift; sourceTree = "<group>"; };
 		82B56291273C54B800E0ED75 /* MockSessionDataTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSessionDataTask.swift; sourceTree = "<group>"; };
-		82CAF890273BF57200ED4A84 /* StarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarManager.swift; sourceTree = "<group>"; };
+		82CAF890273BF57200ED4A84 /* LoginDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDelegate.swift; sourceTree = "<group>"; };
 		82CAF892273BF66000ED4A84 /* HttpMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpMethod.swift; sourceTree = "<group>"; };
 		82D52F3E27399337005A710D /* AccessTokenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenModel.swift; sourceTree = "<group>"; };
 		82D52F41273995FD005A710D /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
@@ -266,7 +264,7 @@
 			children = (
 				829287662735A89A00DA4077 /* ViewRatio.swift */,
 				829287682735B41200DA4077 /* RepositoryListCell.swift */,
-				82CAF890273BF57200ED4A84 /* StarManager.swift */,
+				82CAF890273BF57200ED4A84 /* LoginDelegate.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -278,7 +276,6 @@
 				8213F01627339FD300125B4C /* RepositoryListViewController.swift */,
 				8290469F27351A56005FD0AB /* LoginViewController.swift */,
 				82994C94273920A700BDB313 /* ViewModelBindable.swift */,
-				8297B2BD273B7AB9001DF314 /* LoginDelegate.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -489,13 +486,12 @@
 			files = (
 				82362413274230E4009D6D9B /* EndPoint.swift in Sources */,
 				82D55F70273C66AD00C1E9B7 /* URLSessionProtocol.swift in Sources */,
-				8297B2BE273B7AB9001DF314 /* LoginDelegate.swift in Sources */,
 				8213F01727339FD300125B4C /* RepositoryListViewController.swift in Sources */,
 				8290468D2734E584005FD0AB /* RepositoryLayerType.swift in Sources */,
 				82CAF893273BF66000ED4A84 /* HttpMethod.swift in Sources */,
 				829DA5282742F018007CAB93 /* CommonUsecase.swift in Sources */,
 				82D55F72273C670400C1E9B7 /* MockSessionDataTask.swift in Sources */,
-				82CAF891273BF57200ED4A84 /* StarManager.swift in Sources */,
+				82CAF891273BF57200ED4A84 /* LoginDelegate.swift in Sources */,
 				82D52F462739A36B005A710D /* UserModelDTO.swift in Sources */,
 				82ACC65827363C3700AAE27A /* RepositorySectionModel.swift in Sources */,
 				82ACC65B2736506800AAE27A /* RepositoryListViewModel.swift in Sources */,

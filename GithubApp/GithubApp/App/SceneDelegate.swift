@@ -20,8 +20,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let repositoriesViewModel = RepositoryListViewModel(usecaseLayer: searchUsecase)
         let loginUsecase = LoginUsecase(repositoryLayer: repositoryLayer)
         let loginViewModel = LoginViewModel(usecase: loginUsecase)
-        let firstViewController = Scene.Repositories(repositoriesViewModel).instantiate()
         let loginViewController = Scene.LoginView(loginViewModel).instantiate()
+        let firstViewController = Scene.Repositories(repositoriesViewModel, loginViewController as! LoginDelegate).instantiate()
         
         let rootVC = MainTabBarController()
         rootVC.setViewControllers([firstViewController, loginViewController], animated: true)
@@ -30,16 +30,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         window?.rootViewController = rootVC
         window?.makeKeyAndVisible()
-    }
-    
-    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        
-        if let url = URLContexts.first?.url {
-            guard let rootViewController = self.window?.rootViewController as? MainTabBarController else {
-                return
-            }
-            rootViewController.sendAccessCode(url: url)
-        }
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {

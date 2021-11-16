@@ -81,8 +81,7 @@ final class LoginViewController: UIViewController, ViewModelBindable {
     func initLoginoutButton() {
         self.centerLoginButton.rx.tap
             .bind { [weak self] _ in
-                guard let window = self?.view.window else { return }
-                self?.viewModel.login(in: window)
+                self?.login(window: self?.view.window)
             }.disposed(by: self.disposeBag)
         
         self.titleLoginButton.rx.tap
@@ -248,7 +247,20 @@ extension LoginViewController {
     }
 }
 
-extension LoginViewController: StarDelegate  {
+extension LoginViewController: LoginDelegate  {
+    func login(window: UIWindow?) {
+        guard let validWindow = window else { return }
+        self.viewModel.login(in: validWindow)
+    }
+    
+    func islogin() -> BehaviorRelay<Bool> {
+        return self.viewModel.isLogin()
+    }
+    
+    func logout() {
+        self.viewModel.logout()
+    }
+    
     func starRepository(owner: String, repo: String) -> Observable<Void> {
         self.viewModel.starRepo(owner: owner, repo: repo).map { _ in }
     }
@@ -260,6 +272,4 @@ extension LoginViewController: StarDelegate  {
     func checkStarRepository(owner: String, repo: String) -> Observable<Bool> {
         return self.viewModel.isStarRepo(owner: owner, repo: repo)
     }
-    
-    
 }

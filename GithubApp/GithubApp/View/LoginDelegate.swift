@@ -6,8 +6,12 @@
 //
 
 import RxSwift
+import RxCocoa
 
-protocol StarDelegate: AnyObject {
+protocol LoginDelegate: AnyObject {
+    func login(window: UIWindow?)
+    func logout()
+    func islogin() -> BehaviorRelay<Bool>
     func starRepository(owner: String, repo: String) -> Observable<Void>
     func unstarRepository(owner: String, repo: String) -> Observable<Void>
     func checkStarRepository(owner: String, repo: String) -> Observable<Bool>

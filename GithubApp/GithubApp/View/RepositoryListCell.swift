@@ -21,7 +21,7 @@ final class RepositoryListCell: UITableViewCell {
     private let customDescription: UILabel
     private let starButton: UIButton
     private let unstarButton: UIButton
-    private weak var delegate: StarDelegate?
+    private weak var delegate: LoginDelegate?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         self.disposeBag = DisposeBag()
@@ -80,7 +80,7 @@ final class RepositoryListCell: UITableViewCell {
         }
     }
     
-    func configureCell(with source: RepositoriesModel, buttonDelegate: StarDelegate) {
+    func configureCell(with source: RepositoriesModel, buttonDelegate: LoginDelegate) {
         self.delegate = buttonDelegate
         self.drawIcon()
         self.configureContentView()

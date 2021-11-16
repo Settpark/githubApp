@@ -31,26 +31,6 @@ final class MainTabBarController: UITabBarController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         setTabBarItem()
-        setLoginDelegateRepoController()
-    }
-    
-    func sendAccessCode(url: URL) {
-//        guard let loginViewController = self.viewControllers?[1] as? LoginViewController else {
-//            return
-//        }
-//        loginViewController.requestAccessToken(url: url)
-    }
-    
-    func setLoginDelegateRepoController() {
-        guard let repoViewController = self.viewControllers?.first as? RepositoryListViewController,
-              let loginViewController = self.viewControllers?[1] as? LoginViewController else {
-                  return
-              }
-        if repoViewController.loginDelegate == nil {
-//            repoViewController.loginDelegate = loginViewController
-            //repoViewController.initLoginToken()
-            repoViewController.initLoginButton()
-        }
     }
 }
 
