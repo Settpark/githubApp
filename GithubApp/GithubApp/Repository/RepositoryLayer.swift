@@ -9,8 +9,8 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-final class RepositoryLayer: RepositoryLayerType {
-    
+final class RepositoryLayer: RepositoryLayerType {    
+
     private let disposeBag: DisposeBag
     private let apiService: APIServiceType
     private let authentication: AuthenticationManagerType
@@ -71,8 +71,6 @@ final class RepositoryLayer: RepositoryLayerType {
     
     func starUserrepo(path: Paths, query: [URLQueryItem], method: HttpMethod) -> Observable<Int> {
         Observable.just(1)
-//        return apiService.starUserrepo(path: path, token: <#T##QueryItems#>)
-//            .map { return $0.response.statusCode }
     }
     
     func requestAccessToken(path: Paths, query: [URLQueryItem]) -> Observable<AccessTokenModel> {
@@ -80,12 +78,19 @@ final class RepositoryLayer: RepositoryLayerType {
 //        return apiService.requestAccessToken(type: AccessTokenModel.self, path: path, query: query)
     }
     
-    func requestUserData<T: Decodable>(type: T.Type, path: Paths, token: [URLQueryItem]) -> Observable<T> {
-        Observable.just("" as! T)
-//        return apiService.requestUserData(type: type.self, path: path, token: token)
+    func requestUserData() -> Observable<UserModelDTO> {
+        let token = self.secureStorage.readToken()
+        let endPoint = EndPoint.init(host: .api, path: .User)
+        return self.apiService.requestUserData(endPoint: endPoint, type: UserModelDTO.self, token: token?.accessToken ?? "")
     }
     
-    func requestUserimage(url: String) -> Observable<Data> {
+    func requestUserRepo() -> Observable<[RepositoriesModel]> {
+        let token = self.secureStorage.readToken()
+        let endPoint = EndPoint.init(host: .api, path: .UserRepo)
+        return self.apiService.requestUserData(endPoint: endPoint, type: [RepositoriesModel].self, token: token?.accessToken ?? "")
+    }
+    
+    func requestUserimage(url: String?) -> Observable<Data> {
         return apiService.getfetchedImage(url: url)
     }
     

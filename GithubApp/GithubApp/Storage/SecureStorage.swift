@@ -9,7 +9,7 @@ import Foundation
 
 struct SecureStorage {
     func createToken(_ token: AccessTokenModel) {
-        guard let data = try? JSONEncoder().encode(token) else {
+        guard let data = try? JSONEncoder().encode(token), let _ = token.accessToken else {
             return
         }
         
@@ -18,6 +18,23 @@ struct SecureStorage {
                                 kSecAttrGeneric: data]
         
         SecItemAdd(query as CFDictionary, nil)
+    }
+    
+    func readToken() -> AccessTokenModel? {
+        let query: [CFString: Any] = [kSecClass: kSecClassGenericPassword,
+                                kSecAttrAccount: "token",
+                                 kSecMatchLimit: kSecMatchLimitOne,
+                           kSecReturnAttributes: true,
+                                 kSecReturnData: true]
+        
+        var item: CFTypeRef?
+        if SecItemCopyMatching(query as CFDictionary, &item) != errSecSuccess { return nil }
+        
+        guard let existingItem = item as? [CFString: Any],
+              let data = existingItem[kSecAttrGeneric] as? Data,
+              let user = try? JSONDecoder().decode(AccessTokenModel.self, from: data) else { return nil }
+        
+        return user
     }
     
     func isExistToken() -> Bool {

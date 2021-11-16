@@ -23,4 +23,19 @@ class LoginUsecase: CommonUsecase {
     func deleteUserToken() {
         self.repository.deleteToken()
     }
+    
+    func requestUserData() -> Observable<UserModel> {
+        return self.repository.requestUserData()
+            .flatMap { [weak self] user in
+                return self?.repository.requestUserimage(url: user.avatarUrl)
+                    .map { imageData in
+                        let image = UIImage(data: imageData)
+                        return UserModel.init(login: user.login, avatarUrl: image ?? UIImage())
+                    } ?? Observable<UserModel>.just(UserModel.empty)
+            }
+    }
+    
+    func requestUserRepo() -> Observable<[RepositoriesModel]> {
+        return self.repository.requestUserRepo()
+    }
 }

@@ -10,13 +10,6 @@ import RxSwift
 import RxCocoa
 
 final class APIService: APIServiceType {
-    func requestData<T>(type: T.Type, query: QueryItems) -> Observable<T> where T : Decodable {
-        return Observable.just("" as! T)
-    }
-    
-    func requestUserData<T>(type: T.Type, token: QueryItems) -> Observable<T> where T : Decodable {
-        return Observable.just("" as! T)
-    }
     
     func starUserrepo(path: Paths, token: QueryItems) -> Observable<(response: HTTPURLResponse, data: Data)> {
         return Observable.just((response: HTTPURLResponse(), data: Data()))
@@ -53,25 +46,17 @@ final class APIService: APIServiceType {
         return self.requestDataWithRx(type: type, with: request)
     }
         
-    func requestUserData<T: Decodable>(type: T.Type, path: Paths, token: [URLQueryItem]) -> Observable<T> {
-//        let endPoint = EndPointUserRepo()
-//        let url = endPoint.createValidURL(path: path, query: token)
-//
-//        var request = URLRequest.init(url: url)
-//        request.addValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
-//        if let validToken = token.first, let validTokenvalue = token.first?.value {
-//            let tokenAddHeader = validToken.name + " " + validTokenvalue
-//            request.addValue(tokenAddHeader, forHTTPHeaderField: "Authorization")
-//        }
-//        return URLSession.shared.rx.data(request: request)
-//            .flatMap { data in
-//                return self.decodedData(type: type, data: data)
-//            }
-        return Observable.just("" as! T)
+    func requestUserData<T: Decodable>(endPoint: EndPoint, type: T.Type, token: String) -> Observable<T> {
+        let url = endPoint.createValidURL(with: nil)
+        var request = URLRequest.init(url: url)
+        request.addValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
+        request.addValue("token \(token)", forHTTPHeaderField: "Authorization")
+
+        return self.requestDataWithRx(type: type, with: request)
     }
     
-    func getfetchedImage(url: String) -> Observable<Data> {
-        let validURL = URL(string: url)!
+    func getfetchedImage(url: String?) -> Observable<Data> {
+        let validURL = URL(string: url!)! // 기본 이미지 줘야함 데이터 형태로
         let request = URLRequest.init(url: validURL)
         return URLSession.shared.rx.data(request: request)
     }

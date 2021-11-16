@@ -9,5 +9,17 @@ import UIKit
 
 struct UserModel {
     let login: String
-    let avatarUrl: UIImage?
+    let avatar: UIImage?
+    
+    static let empty = Self()
+    
+    init() {
+        login = ""
+        avatar = UIImage()
+    }
+    
+    init(login: String, avatarUrl: UIImage) {
+        self.login = login
+        self.avatar = avatarUrl
+    }
 }

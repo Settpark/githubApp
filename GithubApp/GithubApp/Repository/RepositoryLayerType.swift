@@ -17,7 +17,8 @@ protocol RepositoryLayerType {
     func isExistToken() -> BehaviorRelay<Bool>
     func deleteToken()
     
-    func requestUserData<T: Decodable>(type: T.Type, path: Paths, token: [URLQueryItem]) -> Observable<T>
-    func requestUserimage(url: String) -> Observable<Data>
+    func requestUserData() -> Observable<UserModelDTO>
+    func requestUserRepo() -> Observable<[RepositoriesModel]>
+    func requestUserimage(url: String?) -> Observable<Data>
     func starUserrepo(path: Paths, query: [URLQueryItem], method: HttpMethod) -> Observable<Int>
 }

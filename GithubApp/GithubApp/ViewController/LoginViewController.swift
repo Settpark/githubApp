@@ -12,7 +12,6 @@ import RxDataSources
 
 final class LoginViewController: UIViewController, ViewModelBindable {
     
-    
     private let disposeBag: DisposeBag
     var viewModel: LoginViewModel!
     
@@ -38,7 +37,8 @@ final class LoginViewController: UIViewController, ViewModelBindable {
         self.centerLoginButton = UIButton()
         self.userInfoview = UIStackView()
         self.userInfoview.alignment = .leading
-        self.userInfoview.distribution = .equalSpacing
+        self.userInfoview.distribution = .fill
+        self.userInfoview.spacing = 15
         self.userImage = UIImageView()
         self.userName = UILabel()
         self.userRepositoriesList = UITableView()
@@ -49,26 +49,33 @@ final class LoginViewController: UIViewController, ViewModelBindable {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func updateViewConstraints() {
-        super.updateViewConstraints()
-    }
-    
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        drawViews()
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
         addSubviews()
     }
     
     func bindViewModel() {
+        self.bindDrawElements()
         self.initTableview()
         self.initDataSource()
         self.initLoginoutButton()
-        self.bindDrawElements()
+        self.bindUserinfo()
+        self.drawViews()
+    }
+    
+    func bindDrawElements() {
+        self.viewModel.isLogin()
+            .asDriver()
+            .drive { [weak self] state in
+                self?.drawLoginView(currentState: state)
+            }.disposed(by: self.disposeBag)
+    }
+    
+    func initTableview() {
+        self.userRepositoriesList.register(RepositoryListCell.self, forCellReuseIdentifier: RepositoryListCell.cellIdentifier)
+        self.userRepositoriesList.rx
+            .setDelegate(self)
+            .disposed(by: self.disposeBag)
     }
     
     func initLoginoutButton() {
@@ -90,51 +97,15 @@ final class LoginViewController: UIViewController, ViewModelBindable {
             }.disposed(by: self.disposeBag)
     }
     
-    //    func requestAccessToken(url: URL) -> Void {
-    //        let code = url.absoluteString.components(separatedBy: "code=").last ?? ""
-    //        let accessCode = URLQueryItem.init(name: "code", value: code)
-    //        self.isLogin.accept(true)
-    //        self.viewModel.getAceessToken(path: .AccessToken, query: [accessCode])
-    //            .bind { [weak self] token in
-    //                self?.loginToken.onNext(token)
-    //            }.disposed(by: self.disposeBag)
-    //    }
-    
-    func bindDrawElements() {
-        self.viewModel.isLogin()
+    func bindUserinfo() {
+        self.viewModel.requestUserData()
             .observe(on: MainScheduler.instance)
-            .bind { [weak self] state in
-                self?.drawLoginView(currentState: state)
+            .bind { [weak self] userData in
+                self?.userName.text = userData.login
+                self?.userImage.image = userData.avatar
             }.disposed(by: self.disposeBag)
     }
     
-    func bindUserinfo() {
-        self.viewModel.outputUserinfo
-            .observe(on: MainScheduler.instance)
-            .bind { [weak self] title in
-                self?.userName.text = title.login
-            }.disposed(by: disposeBag)
-        
-        //        self.viewModel.outputUserinfo
-        //            .flatMap { [unowned self] image in
-        //                return self.viewModel.requestUserimage(url: image.avatarUrl ?? "")
-        //            }.observe(on: MainScheduler.instance)
-        //            .bind { [weak self] data in
-        //                self?.userImage.image = UIImage(data: data)
-        //            }.disposed(by: self.disposeBag)
-        //
-        //        self.loginToken
-        //            .bind { [weak self] token in
-        //                self?.viewModel.inputToken.onNext(token)
-        //            }.disposed(by: self.disposeBag)
-    }
-    
-    func initTableview() {
-        self.userRepositoriesList.register(RepositoryListCell.self, forCellReuseIdentifier: RepositoryListCell.cellIdentifier)
-        self.userRepositoriesList.rx
-            .setDelegate(self)
-            .disposed(by: self.disposeBag)
-    }
 }
 
 extension LoginViewController {
@@ -201,7 +172,6 @@ extension LoginViewController {
         self.userImage.widthAnchor.constraint(equalTo: self.userImage.heightAnchor).isActive = true
         self.userName.translatesAutoresizingMaskIntoConstraints = false
         self.userName.heightAnchor.constraint(equalTo: self.userInfoview.heightAnchor).isActive = true
-        self.userName.trailingAnchor.constraint(equalTo: self.userInfoview.trailingAnchor).isActive = true
     }
     
     func drawTitleView() {
@@ -246,6 +216,7 @@ extension LoginViewController {
     }
     
     func drawViews() {
+        self.view.backgroundColor = .white
         self.drawLoginButton()
         self.drawLoginLabel()
         self.drawUserinfoView()
@@ -271,7 +242,7 @@ extension LoginViewController {
             return cell
         })
         
-        self.viewModel.outputUserRepo
+        self.viewModel.requestUserRepo()
             .bind(to: self.userRepositoriesList.rx.items(dataSource: self.listDataSource))
             .disposed(by: self.disposeBag)
     }

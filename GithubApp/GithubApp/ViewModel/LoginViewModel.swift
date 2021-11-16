@@ -13,13 +13,13 @@ final class LoginViewModel {
     
     private let disposeBag: DisposeBag
     private let usecase: LoginUsecase
-    let outputUserinfo: PublishSubject<UserModelDTO>
+//    let outputUserinfo: PublishSubject<UserModelDTO>
     let outputUserRepo: PublishSubject<[RepositoryListSectionData]>
     
     init(usecase: LoginUsecase) {
         self.usecase = usecase
         self.disposeBag = DisposeBag()
-        self.outputUserinfo = PublishSubject<UserModelDTO>()
+//        self.outputUserinfo = PublishSubject<UserModelDTO>()
         self.outputUserRepo = PublishSubject<[RepositoryListSectionData]>()
     }
     
@@ -33,6 +33,31 @@ final class LoginViewModel {
     
     func login(in currentView: UIWindow) {
         self.usecase.startWebAuthSession(in: currentView)
+    }
+    
+    func requestUserData() -> Observable<UserModel> {
+        self.isLogin()
+            .flatMap { [weak self] state -> Observable<UserModel> in
+                if state {
+                    return self?.usecase.requestUserData() ?? Observable.just(UserModel.empty)
+                } else {
+                    return Observable.just(UserModel.empty)
+                }
+            }
+    }
+    
+    func requestUserRepo() -> Observable<[RepositoryListSectionData]> {
+        self.isLogin()
+            .flatMap { [weak self] state -> Observable<[RepositoriesModel]> in
+                if state {
+                    return self?.usecase.requestUserRepo() ?? Observable.just([])
+                } else {
+                    return Observable.just([])
+                }
+            }.map { data in
+                let temp = [RepositoryListSectionData.init(items: data)]
+                return temp
+            }
     }
     
 //    func requestUserData(path: Paths, token: [URLQueryItem]) -> Observable<UserModelDTO> {
@@ -76,6 +101,6 @@ final class LoginViewModel {
 //    }
     
 //    func requestUserimage(url: String) -> Observable<Data> {
-//        return repository.requestUserimage(url: url)
+//        return usecase.requestUserimage(url: url)
 //    }
 }
