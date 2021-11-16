@@ -20,8 +20,8 @@ final class RepositoryListCell: UITableViewCell {
     private var title: UIStackView
     private let customDescription: UILabel
     private let starButton: UIButton
-    private weak var delegate: StarManager?
-    private var isCheck: Bool?
+    private let unstarButton: UIButton
+    private weak var delegate: StarDelegate?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         self.disposeBag = DisposeBag()
@@ -48,36 +48,19 @@ final class RepositoryListCell: UITableViewCell {
         
         self.icon = UIImageView()
         self.starButton = UIButton()
+        self.unstarButton = UIButton()
         self.customDescription = UILabel()
         self.customDescription.numberOfLines = 2
-        self.isCheck = nil
         super.init(style: .default, reuseIdentifier: nil)
     }
     
     required init?(coder: NSCoder) {
-        self.disposeBag = DisposeBag()
-        
-        self.customContentView = UIStackView()
-        self.customContentView.axis = .vertical
-        self.topics = UIStackView()
-        self.topics.axis = .horizontal
-        self.etc = UIStackView()
-        self.etc.axis = .horizontal
-        self.etc.distribution = .equalSpacing
-        self.etc.alignment = .leading
-        
-        self.icon = UIImageView()
-        self.starButton = UIButton()
-        self.title = UIStackView()
-        self.customDescription = UILabel()
-        super.init(coder: coder)
+        fatalError()
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
         self.customDescription.removeFromSuperview()
-        self.starButton.setBackgroundImage(nil, for: .normal)
         
         self.customContentView.subviews.forEach {
             $0.removeFromSuperview()
@@ -97,7 +80,7 @@ final class RepositoryListCell: UITableViewCell {
         }
     }
     
-    func configureCell(with source: RepositoriesModel, buttonDelegate: StarManager) {
+    func configureCell(with source: RepositoriesModel, buttonDelegate: StarDelegate) {
         self.delegate = buttonDelegate
         self.drawIcon()
         self.configureContentView()
@@ -106,48 +89,9 @@ final class RepositoryListCell: UITableViewCell {
         self.drawTopics(source: source.topics)
         self.drawStarCount(source: source.stargazersCount)
         self.drawStarButton(constraint: self)
-        
-        initIsCheck(owner: source.owner, name: source.name)
-    }
-    
-    func initIsCheck(owner: Owner?, name: String?) {
-        guard let ownerInfo = owner?.login, let repoName = name else {
-            return
-        }
-        self.delegate?.checkStarRepository(owner: ownerInfo, repo: repoName)
-            .observe(on: MainScheduler.instance)
-            .bind() { [weak self] check in
-                self?.initStarImage(isCheck: check)
-                self?.bindStarButton(owner: ownerInfo, repo: repoName)
-            }.disposed(by: self.disposeBag)
-    }
-    
-    func initStarImage(isCheck: Bool?) {
-        if isCheck == nil || isCheck == false {
-            self.starButton.setBackgroundImage(UIImage(systemName: "star"), for: .normal)
-        } else {
-            self.starButton.setBackgroundImage(UIImage(systemName: "star.fill"), for: .normal)
-        }
-    }
-    
-    func bindStarButton(owner: String, repo: String) {
-        self.starButton.rx.tap
-            .flatMap {
-                return (self.delegate?.checkStarRepository(owner: owner, repo: repo))!
-            }.observe(on: MainScheduler.instance)
-            .bind { state in
-                guard let valid = state else {
-                    return
-                }
-                if !valid {
-                    self.delegate?.starRepository(owner: owner, repo: repo)
-                    self.starButton.setBackgroundImage(UIImage(systemName: "star.fill"), for: .normal)
-                } else {
-                    self.delegate?.unstarRespository(owner: owner, repo: repo)
-                    self.starButton.setBackgroundImage(UIImage(systemName: "star"), for: .normal)
-                }
-                self.layer.displayIfNeeded()
-            }.disposed(by: self.disposeBag)
+        self.drawUnstarButton(constraint: self)
+        self.drawStarredbutton(source: source)
+        self.initStarButton(resource: source)
     }
     
     func drawIcon() {
@@ -249,6 +193,7 @@ final class RepositoryListCell: UITableViewCell {
     func drawStarButton(constraint guide: UIView) {
         self.addSubview(starButton)
         self.bringSubviewToFront(self.starButton)
+        self.starButton.setBackgroundImage(UIImage(systemName: "star.fill"), for: .normal)
         self.starButton.tintColor = .systemYellow
         self.starButton.translatesAutoresizingMaskIntoConstraints = false
         self.starButton.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.1).isActive = true
@@ -267,6 +212,74 @@ final class RepositoryListCell: UITableViewCell {
             contentViewFinalConstraint.isActive = true
             iconFinalConstraint.isActive = true
         }
+    }
+    
+    func drawUnstarButton(constraint guide: UIView) {
+        self.addSubview(unstarButton)
+        self.bringSubviewToFront(self.unstarButton)
+        self.unstarButton.setBackgroundImage(UIImage(systemName: "star"), for: .normal)
+        self.unstarButton.tintColor = .systemYellow
+        self.unstarButton.translatesAutoresizingMaskIntoConstraints = false
+        self.unstarButton.widthAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.1).isActive = true
+        self.unstarButton.heightAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.1).isActive = true
+        self.unstarButton.topAnchor.constraint(equalTo: guide.topAnchor, constant: 10).isActive = true
+        self.unstarButton.trailingAnchor.constraint(equalTo: guide.trailingAnchor, constant: -20).isActive = true
         
+        self.customContentView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20).isActive = true
+        let contentViewFinalConstraint = self.customContentView.topAnchor.constraint(equalTo: self.unstarButton.bottomAnchor, constant: 10)
+        contentViewFinalConstraint.priority = .defaultHigh
+        let iconFinalConstraint = self.icon.topAnchor.constraint(equalTo: self.unstarButton.bottomAnchor, constant: 10)
+        iconFinalConstraint.priority = .defaultHigh
+        layoutIfNeeded()
+    }
+    
+    func drawStarredbutton(source: RepositoriesModel) {
+        guard let name = source.owner?.login, let repo = source.name else {
+            return
+        }
+        self.delegate?.checkStarRepository(owner: name, repo: repo)
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] state in
+                self?.hiddenStarUnStar(state: state)
+            }, onError: { error in
+                //
+            }).disposed(by: self.disposeBag)
+    }
+    
+    func initStarButton(resource: RepositoriesModel) {
+        guard let validOwner = resource.owner?.login, let validRepo = resource.name else {
+            return
+        }
+        self.starButton.rx.tap
+            .bind { [weak self] _ in
+                self?.delegate?.unstarRepository(owner: validOwner, repo: validRepo)
+                    .flatMap {
+                        return self?.delegate?.checkStarRepository(owner: validOwner, repo: validRepo) ?? Observable<Bool>.just(false)
+                    }.observe(on: MainScheduler.instance)
+                    .bind { [weak self] state in
+                        self?.hiddenStarUnStar(state: state)
+                    }.disposed(by: (self?.disposeBag)!)
+            }.disposed(by: self.disposeBag)
+        
+        self.unstarButton.rx.tap
+            .bind { [weak self] _ in
+                self?.delegate?.starRepository(owner: validOwner, repo: validRepo)
+                    .flatMap {
+                        return self?.delegate?.checkStarRepository(owner: validOwner, repo: validRepo) ?? Observable<Bool>.just(false)
+                    }.observe(on: MainScheduler.instance)
+                    .bind { [weak self] state in
+                        self?.hiddenStarUnStar(state: state)
+                    }.disposed(by: (self?.disposeBag)!)
+            }.disposed(by: self.disposeBag)
+    }
+    
+    func hiddenStarUnStar(state: Bool) {
+        if state {
+            self.unstarButton.isHidden = true
+            self.starButton.isHidden = false
+        } else {
+            self.unstarButton.isHidden = false
+            self.starButton.isHidden = true
+        }
     }
 }

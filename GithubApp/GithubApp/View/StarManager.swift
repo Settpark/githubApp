@@ -6,10 +6,9 @@
 //
 
 import RxSwift
-import UIKit
 
-protocol StarManager: AnyObject {    
-    func starRepository(owner: String, repo: String)
-    func unstarRespository(owner: String, repo: String)
-    func checkStarRepository(owner: String, repo: String) -> Observable<Bool?>
+protocol StarDelegate: AnyObject {
+    func starRepository(owner: String, repo: String) -> Observable<Void>
+    func unstarRepository(owner: String, repo: String) -> Observable<Void>
+    func checkStarRepository(owner: String, repo: String) -> Observable<Bool>
 }

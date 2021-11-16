@@ -44,7 +44,7 @@ struct EndPoint: EndPointManager {
         guard let validURL = urlcomponets.url else {
             return URL(string: "")! //redirect를 줘야 하나?
         }
-        
+
         return validURL
     }
 }

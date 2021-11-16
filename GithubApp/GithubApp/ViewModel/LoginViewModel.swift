@@ -13,13 +13,11 @@ final class LoginViewModel {
     
     private let disposeBag: DisposeBag
     private let usecase: LoginUsecase
-//    let outputUserinfo: PublishSubject<UserModelDTO>
     let outputUserRepo: PublishSubject<[RepositoryListSectionData]>
     
     init(usecase: LoginUsecase) {
         self.usecase = usecase
         self.disposeBag = DisposeBag()
-//        self.outputUserinfo = PublishSubject<UserModelDTO>()
         self.outputUserRepo = PublishSubject<[RepositoryListSectionData]>()
     }
     
@@ -60,47 +58,45 @@ final class LoginViewModel {
             }
     }
     
-//    func requestUserData(path: Paths, token: [URLQueryItem]) -> Observable<UserModelDTO> {
-//        return repository.requestUserData(type: UserModelDTO.self, path: path, token: token)
-//    }
-//
-//    func requestUserRepos(path: Paths, token: [URLQueryItem]) -> Observable<[RepositoryListSectionData]> {
-//        return repository.requestUserData(type: [RepositoriesModel].self, path: path, token: token)
-//            .map { data in
-//                let temp = [RepositoryListSectionData.init(items: data)]
-//                return temp
-//            }
-//    }
-//
-//    func checkStaredUserRepo(path: Paths, query: [URLQueryItem], method: HttpMethod) -> Observable<Bool?> {
-//        guard let accessToken = userToken?.accessToken else {
-//            return Observable.just(nil)
-//        }
-//        let tempToken = URLQueryItem(name: "token", value: accessToken)
-//        var tempQuery = query
-//        tempQuery.append(tempToken)
-//
-//        return repository.starUserrepo(path: path, query: tempQuery, method: method)
-//            .map { statuscode -> Bool in
-//                if statuscode > 400 { return false }
-//                else { return true }
-//            }
-//    }
+    func starRepo(owner: String, repo: String) -> Observable<Bool> {
+        let query = QueryItems()
+        query.addQuery(newKey: "owner", newElement: owner)
+        query.addQuery(newKey: "repo", newElement: repo)
+        return self.usecase.requestStarRepo(httpMethod: .put, query: query)
+            .map { statusCode in
+                if statusCode > 400 {
+                    return false
+                } else {
+                    return true
+                }
+            }
+    }
     
-//    func starUserRepo(path: Paths, query: [URLQueryItem], method: HttpMethod) {
-//        guard let accessToken = userToken?.accessToken else {
-//            return
-//        }
-//        let tempToken = URLQueryItem(name: "token", value: accessToken)
-//        var tempQuery = query
-//        tempQuery.append(tempToken)
-//
-//        repository.starUserrepo(path: path, query: tempQuery, method: method)
-//            .subscribe{ _ in }
-//            .disposed(by: self.disposeBag)
-//    }
+    func unstarRepo(owner: String, repo: String) -> Observable<Bool> {
+        let query = QueryItems()
+        query.addQuery(newKey: "owner", newElement: owner)
+        query.addQuery(newKey: "repo", newElement: repo)
+        return self.usecase.requestStarRepo(httpMethod: .delete, query: query)
+            .map { statusCode in
+                if statusCode > 400 {
+                    return false
+                } else {
+                    return true
+                }
+            }
+    }
     
-//    func requestUserimage(url: String) -> Observable<Data> {
-//        return usecase.requestUserimage(url: url)
-//    }
+    func isStarRepo(owner: String, repo: String) -> Observable<Bool> {
+        let query = QueryItems()
+        query.addQuery(newKey: "owner", newElement: owner)
+        query.addQuery(newKey: "repo", newElement: repo)
+        return self.usecase.requestStarRepo(httpMethod: .get, query: query)
+            .map { statusCode in
+                if statusCode > 400 {
+                    return false
+                } else {
+                    return true
+                }
+            }
+    }
 }

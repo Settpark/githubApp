@@ -32,7 +32,10 @@ class QueryItems {
         }
         var newPath = validPath
         self.queryItems.forEach {
-            newPath.append("/\($0)")
+            guard let validValue = $0.value else {
+                return
+            }
+            newPath.append("/\(validValue)")
         }
         return newPath
     }

@@ -248,44 +248,18 @@ extension LoginViewController {
     }
 }
 
-extension LoginViewController: StarManager {
-    func starRepository(owner: String, repo: String) {
-        //
+extension LoginViewController: StarDelegate  {
+    func starRepository(owner: String, repo: String) -> Observable<Void> {
+        self.viewModel.starRepo(owner: owner, repo: repo).map { _ in }
     }
     
-    func unstarRespository(owner: String, repo: String) {
-        //
+    func unstarRepository(owner: String, repo: String) -> Observable<Void> {
+        self.viewModel.unstarRepo(owner: owner, repo: repo).map { _ in }
     }
     
-    func checkStarRepository(owner: String, repo: String) -> Observable<Bool?> {
-        Observable.just(false)
+    func checkStarRepository(owner: String, repo: String) -> Observable<Bool> {
+        return self.viewModel.isStarRepo(owner: owner, repo: repo)
     }
     
-    //    func checkStarRepository(owner: String, repo: String) -> Observable<Bool?> {
-    //        if !(self.isLogin.value) {
-    //            return Observable.just(nil)
-    //        }
-    //
-    //        let userName = URLQueryItem(name: "owner", value: owner)
-    //        let userRepo = URLQueryItem(name: "repo", value: repo)
-    //        return self.viewModel.checkStaredUserRepo(path: .Star, query: [userName, userRepo], method: .get)
-    //    }
-    //
-    //    func unstarRespository(owner: String, repo: String) {
-    //        if !self.isLogin.value {
-    //            return
-    //        }
-    //        let userName = URLQueryItem(name: "owner", value: owner)
-    //        let userRepo = URLQueryItem(name: "repo", value: repo)
-    //        self.viewModel.starUserRepo(path: .Star, query: [userName, userRepo], method: .delete)
-    //    }
-    //
-    //    func starRepository(owner: String, repo: String) {
-    //        if !self.isLogin.value {
-    //            return
-    //        }
-    //        let userName = URLQueryItem(name: "owner", value: owner)
-    //        let userRepo = URLQueryItem(name: "repo", value: repo)
-    //        self.viewModel.starUserRepo(path: .Star, query: [userName, userRepo], method: .put)
-    //    }
+    
 }

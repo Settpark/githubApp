@@ -38,6 +38,10 @@ final class RepositoryLayer: RepositoryLayerType {
             }
     }
     
+    func clearSearchResult() {
+        self.searchResultList.items.removeAll()
+    }
+    
     func startWebAuthSession(window: UIWindow, query: QueryItems) {
         self.authentication.startWebAuthSession(in: window, query: query)
     }
@@ -65,36 +69,25 @@ final class RepositoryLayer: RepositoryLayerType {
             }.disposed(by: self.disposeBag)
     }
     
-    func clearSearchResult() {
-        self.searchResultList.items.removeAll()
-    }
-    
-    func starUserrepo(path: Paths, query: [URLQueryItem], method: HttpMethod) -> Observable<Int> {
-        Observable.just(1)
-    }
-    
-    func requestAccessToken(path: Paths, query: [URLQueryItem]) -> Observable<AccessTokenModel> {
-        Observable.just(AccessTokenModel())
-//        return apiService.requestAccessToken(type: AccessTokenModel.self, path: path, query: query)
-    }
-    
     func requestUserData() -> Observable<UserModelDTO> {
         let token = self.secureStorage.readToken()
         let endPoint = EndPoint.init(host: .api, path: .User)
-        return self.apiService.requestUserData(endPoint: endPoint, type: UserModelDTO.self, token: token?.accessToken ?? "")
+        return self.apiService.requestUserData(endPoint: endPoint, type: UserModelDTO.self, token: token?.accessToken ?? "") // 옵셔널 처리 -> 빈 모델?
     }
     
     func requestUserRepo() -> Observable<[RepositoriesModel]> {
         let token = self.secureStorage.readToken()
         let endPoint = EndPoint.init(host: .api, path: .UserRepo)
-        return self.apiService.requestUserData(endPoint: endPoint, type: [RepositoriesModel].self, token: token?.accessToken ?? "")
+        return self.apiService.requestUserData(endPoint: endPoint, type: [RepositoriesModel].self, token: token?.accessToken ?? "") //옵셔널 처리 -> 빈 배열?
     }
     
     func requestUserimage(url: String?) -> Observable<Data> {
         return apiService.getfetchedImage(url: url)
     }
     
-    func clearRepositories() {
-//        self.repoListsRepository.removeAll()
+    func requestStarRepo(httpMethod: HttpMethod, query: QueryItems) -> Observable<Int> {
+        let token = self.secureStorage.readToken()
+        return apiService.starUserrepo(httpMethod: httpMethod, query: query, token: token?.accessToken ?? "") // 옵셔널 처리 실패 statusCode?
+            .map { return $0.response.statusCode }
     }
 }

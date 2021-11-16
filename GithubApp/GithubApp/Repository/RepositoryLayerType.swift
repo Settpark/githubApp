@@ -20,5 +20,5 @@ protocol RepositoryLayerType {
     func requestUserData() -> Observable<UserModelDTO>
     func requestUserRepo() -> Observable<[RepositoriesModel]>
     func requestUserimage(url: String?) -> Observable<Data>
-    func starUserrepo(path: Paths, query: [URLQueryItem], method: HttpMethod) -> Observable<Int>
+    func requestStarRepo(httpMethod: HttpMethod, query: QueryItems) -> Observable<Int>
 }

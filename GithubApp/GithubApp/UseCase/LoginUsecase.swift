@@ -38,4 +38,8 @@ class LoginUsecase: CommonUsecase {
     func requestUserRepo() -> Observable<[RepositoriesModel]> {
         return self.repository.requestUserRepo()
     }
+    
+    func requestStarRepo(httpMethod: HttpMethod, query: QueryItems) -> Observable<Int> {
+        return self.repository.requestStarRepo(httpMethod: httpMethod, query: query)
+    }
 }

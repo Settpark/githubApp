@@ -11,10 +11,6 @@ import RxCocoa
 
 final class APIService: APIServiceType {
     
-    func starUserrepo(path: Paths, token: QueryItems) -> Observable<(response: HTTPURLResponse, data: Data)> {
-        return Observable.just((response: HTTPURLResponse(), data: Data()))
-    }
-    
     private let urlsession: URLSessionProtocol
     
     init(urlSessionManager: URLSessionProtocol) {
@@ -26,6 +22,10 @@ final class APIService: APIServiceType {
             .flatMap { [unowned self] data in
                 return self.decodedData(type: type, data: data)
             }
+    }
+    
+    func requestResponseWithRx(request: URLRequest) -> Observable<(response: HTTPURLResponse, data: Data)> {
+        return URLSession.shared.rx.response(request: request)
     }
     
     func requestRepositories<T: Decodable>(type: T.Type, query: QueryItems) -> Observable<T> {
@@ -71,20 +71,17 @@ final class APIService: APIServiceType {
             return Observable.error(err)
         }
     }
-    
-    func requetDataWithSession<T: Decodable>(request: URLRequest, type: T.Type, completion: @escaping (Result<T,Error>) -> Void) {
-//        let endPoint = EndPointRepositories.init()
-//        let query = URLQueryItem(name: "q", value: "forTest")
-//        let request = URLRequest(url: endPoint.createValidURL(path: .Repositories, query: [query]))
-//        let jsonDecoder = JSONDecoder()
-//        jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
-//        self.urlsession.dataTask(with: request) { data, response, error in
-//            do {
-//                let result = try jsonDecoder.decode(type, from: data!)
-//                completion(.success(result))
-//            } catch (let error) {
-//                completion(.failure(error))
-//            }
-//        }.resume()
+
+    func starUserrepo(httpMethod: HttpMethod, query: QueryItems, token: String) -> Observable<(response: HTTPURLResponse, data: Data)> {
+        let endPoint = EndPoint.init(host: .api, path: .Star)
+        let url = endPoint.createValidURLChange(path: query)
+        var request = URLRequest.init(url: url)
+        
+        request.httpMethod = httpMethod.rawValue
+        request.addValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
+        request.addValue("token \(token)", forHTTPHeaderField: "Authorization")
+        
+        return self.requestResponseWithRx(request: request)
     }
+    
 }

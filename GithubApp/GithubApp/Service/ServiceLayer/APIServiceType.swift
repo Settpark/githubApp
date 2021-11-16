@@ -13,6 +13,7 @@ protocol APIServiceType {
     func requestRepositories<T: Decodable>(type: T.Type, query: QueryItems) -> Observable<T>
     func requestAccessToken<T: Decodable>(type: T.Type, query: QueryItems) -> Observable<T>
     func requestUserData<T: Decodable>(endPoint: EndPoint, type: T.Type, token: String) -> Observable<T>
-//    func starUserrepo(path: Paths, token: QueryItems) -> Observable<(response: HTTPURLResponse, data: Data)>
+    func requestResponseWithRx(request: URLRequest) -> Observable<(response: HTTPURLResponse, data: Data)>
+    func starUserrepo(httpMethod: HttpMethod, query: QueryItems, token: String) -> Observable<(response: HTTPURLResponse, data: Data)>
     func getfetchedImage(url: String?) -> Observable<Data>
 }

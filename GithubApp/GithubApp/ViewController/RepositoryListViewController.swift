@@ -162,32 +162,17 @@ extension RepositoryListViewController: UITableViewDelegate {
     }
 }
 
-extension RepositoryListViewController: StarManager {
-    func checkStarRepository(owner: String, repo: String) -> Observable<Bool?> {
-        if !(self.loginDelegate?.isLogin.value ?? false) {
-            return Observable.just(nil)
-        }
-        let userName = URLQueryItem(name: "owner", value: owner)
-        let userRepo = URLQueryItem(name: "repo", value: repo)
-        return self.viewModel.checkStaredUserRepo(path: .Star, query: [userName, userRepo], method: .get)
+extension RepositoryListViewController: StarDelegate {
+    func starRepository(owner: String, repo: String) -> Observable<Void> {
+        return Observable<Void>.just(())
     }
     
-    func unstarRespository(owner: String, repo: String) {
-        if !(self.loginDelegate?.isLogin.value ?? false) {
-            return
-        }
-        let userName = URLQueryItem(name: "owner", value: owner)
-        let userRepo = URLQueryItem(name: "repo", value: repo)
-        self.viewModel.starUserRepo(path: .Star, query: [userName, userRepo], method: .delete)
+    func unstarRepository(owner: String, repo: String) -> Observable<Void> {
+        return Observable<Void>.just(())
     }
     
-    func starRepository(owner: String, repo: String) {
-        if !(self.loginDelegate?.isLogin.value ?? false) {
-            return
-        }
-        let userName = URLQueryItem(name: "owner", value: owner)
-        let userRepo = URLQueryItem(name: "repo", value: repo)
-        self.viewModel.starUserRepo(path: .Star, query: [userName, userRepo], method: .put)
+    func checkStarRepository(owner: String, repo: String) -> Observable<Bool> {
+        return Observable.just(false)
     }
 }
 
