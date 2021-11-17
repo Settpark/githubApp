@@ -12,8 +12,8 @@ enum ViewRatio: CGFloat {
     case titleWidthRatio = 5
     case buttonWidthRatio = 6
     case buttonTrailingAnchor = -10
-    case searchFieldWidth = 0.65
+    case searchFieldWidth = 0.7
     case searchFieldHeight = 0.06
-    case searchButtonWidth = 0.25
+    case searchButtonWidth = 0.2
     case iconSizeMultiplier = 0.05
 }

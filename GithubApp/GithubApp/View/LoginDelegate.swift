@@ -9,6 +9,7 @@ import RxSwift
 import RxCocoa
 
 protocol LoginDelegate: AnyObject {
+    func drawTitleView(titleView: UIView, titleLabel: UILabel, titleLoginButton: UIButton, titleLogoutButton: UIButton, titleImage: UIImageView, superView: UIView)
     func login(window: UIWindow?)
     func logout()
     func islogin() -> BehaviorRelay<Bool>

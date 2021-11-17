@@ -14,7 +14,7 @@ class SearchRepositoriesUsecase: CommonUsecase {
         self.repository.clearSearchResult()
         let query = QueryItems()
         query.addQuery(newKey: "q", newElement: value)
-        query.addQuery(newKey: "per_page", newElement: "\(15)")
+        query.addQuery(newKey: "per_page", newElement: "\(100)")
         return repository.requestRepositoryList(query: query)
             .map { return $0.items }
     }
@@ -22,7 +22,7 @@ class SearchRepositoriesUsecase: CommonUsecase {
     func requestNextRepositories(value: String, page: Int) -> Observable<[RepositoriesModel]> {
         let query = QueryItems()
         query.addQuery(newKey: "q", newElement: value)
-        query.addQuery(newKey: "per_page", newElement: "\(15)")
+        query.addQuery(newKey: "per_page", newElement: "\(100)")
         query.addQuery(newKey: "page", newElement: "\(page)")
         return repository.requestRepositoryList(query: query)
             .map { return $0.items }

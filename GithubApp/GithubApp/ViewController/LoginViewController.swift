@@ -17,6 +17,7 @@ final class LoginViewController: UIViewController, ViewModelBindable {
     
     private let titleView: UIView
     private let titleLabel: UILabel
+    private let titleImage: UIImageView
     private let titleLoginButton: UIButton
     private let titleLogoutButton: UIButton
     private let loginLabel: UILabel
@@ -33,6 +34,7 @@ final class LoginViewController: UIViewController, ViewModelBindable {
         self.titleLabel = UILabel()
         self.titleLoginButton = UIButton()
         self.titleLogoutButton = UIButton()
+        self.titleImage = UIImageView()
         self.loginLabel = UILabel()
         self.centerLoginButton = UIButton()
         self.userInfoview = UIStackView()
@@ -111,13 +113,14 @@ extension LoginViewController {
     func drawLoginView(currentState: Bool) {
         self.view.subviews.forEach { $0.isHidden = true }
         self.titleView.isHidden = false
-        self.titleView.subviews.forEach { $0.isHidden = true }
         if !currentState {
             self.titleLoginButton.isHidden = false
+            self.titleLogoutButton.isHidden = true
             self.centerLoginButton.isHidden = false
             self.loginLabel.isHidden = false
         } else {
             self.titleLogoutButton.isHidden = false
+            self.titleLoginButton.isHidden = true
             self.userInfoview.isHidden = false
             self.userRepositoriesList.isHidden = false
             self.userImage.isHidden = false
@@ -173,32 +176,45 @@ extension LoginViewController {
         self.userName.heightAnchor.constraint(equalTo: self.userInfoview.heightAnchor).isActive = true
     }
     
-    func drawTitleView() {
-        self.titleView.backgroundColor = .darkGray
-        self.titleView.translatesAutoresizingMaskIntoConstraints = false
-        self.titleView.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        self.titleView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
-        self.titleView.widthAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.widthAnchor).isActive = true
-        self.titleView.heightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.heightAnchor, multiplier: ViewRatio.topViewHeightRatio.rawValue).isActive = true
+    func drawTitleView(titleView: UIView, titleLabel: UILabel, titleLoginButton: UIButton, titleLogoutButton: UIButton, titleImage: UIImageView, superView: UIView) {
         
-        self.titleLabel.text = "Github"
-        self.titleLabel.font = .systemFont(ofSize: 17)
-        self.titleLabel.sizeToFit()
-        self.titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.titleLabel.centerXAnchor.constraint(equalTo: self.titleView.centerXAnchor).isActive = true
-        self.titleLabel.centerYAnchor.constraint(equalTo: self.titleView.centerYAnchor).isActive = true
+        titleView.backgroundColor = .white
+        titleView.translatesAutoresizingMaskIntoConstraints = false
+        titleView.centerXAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        titleView.topAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
+        titleView.widthAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.widthAnchor).isActive = true
+        titleView.heightAnchor.constraint(equalTo: superView.safeAreaLayoutGuide.heightAnchor, multiplier: ViewRatio.topViewHeightRatio.rawValue).isActive = true
         
-        self.titleLoginButton.setTitle("로그인", for: .normal)
-        self.titleLoginButton.sizeToFit()
-        self.titleLoginButton.translatesAutoresizingMaskIntoConstraints = false
-        self.titleLoginButton.centerYAnchor.constraint(equalTo: self.titleView.centerYAnchor).isActive = true
-        self.titleLoginButton.trailingAnchor.constraint(equalTo: self.titleView.trailingAnchor, constant: -10).isActive = true
+        titleImage.image = UIImage(named: "github")
+        titleImage.translatesAutoresizingMaskIntoConstraints = false
+        titleImage.leadingAnchor.constraint(equalTo: titleView.leadingAnchor, constant: 10).isActive = true
+        titleImage.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
+        titleImage.widthAnchor.constraint(equalTo: superView.widthAnchor, multiplier: 0.1).isActive = true
+        titleImage.heightAnchor.constraint(equalTo: titleImage.widthAnchor).isActive = true
         
-        self.titleLogoutButton.setTitle("로그아웃", for: .normal)
-        self.titleLogoutButton.sizeToFit()
-        self.titleLogoutButton.translatesAutoresizingMaskIntoConstraints = false
-        self.titleLogoutButton.centerYAnchor.constraint(equalTo: self.titleView.centerYAnchor).isActive = true
-        self.titleLogoutButton.trailingAnchor.constraint(equalTo: self.titleView.trailingAnchor, constant: -10).isActive = true
+        titleLabel.text = "Github"
+        titleLabel.font = .boldSystemFont(ofSize: 17)
+        titleLabel.sizeToFit()
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.leadingAnchor.constraint(equalTo: titleImage.trailingAnchor, constant: 10).isActive = true
+        titleLabel.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
+        
+        
+        titleLoginButton.setTitle("로그인", for: .normal)
+        titleLoginButton.setTitleColor(.black, for: .normal)
+        titleLoginButton.titleLabel?.font = .boldSystemFont(ofSize: 17)
+        titleLoginButton.sizeToFit()
+        titleLoginButton.translatesAutoresizingMaskIntoConstraints = false
+        titleLoginButton.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
+        titleLoginButton.trailingAnchor.constraint(equalTo: titleView.trailingAnchor, constant: -10).isActive = true
+        
+        titleLogoutButton.setTitle("로그아웃", for: .normal)
+        titleLogoutButton.setTitleColor(.black, for: .normal)
+        titleLogoutButton.titleLabel?.font = .boldSystemFont(ofSize: 17)
+        titleLogoutButton.sizeToFit()
+        titleLogoutButton.translatesAutoresizingMaskIntoConstraints = false
+        titleLogoutButton.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
+        titleLogoutButton.trailingAnchor.constraint(equalTo: titleView.trailingAnchor, constant: -10).isActive = true
     }
     
     func addSubviews() {
@@ -208,6 +224,7 @@ extension LoginViewController {
         self.titleView.addSubview(self.titleLabel)
         self.titleView.addSubview(self.titleLoginButton)
         self.titleView.addSubview(self.titleLogoutButton)
+        self.titleView.addSubview(self.titleImage)
         self.view.addSubview(self.userRepositoriesList)
         self.view.addSubview(userInfoview)
         self.userInfoview.addArrangedSubview(self.userImage)
@@ -221,7 +238,7 @@ extension LoginViewController {
         self.drawUserinfoView()
         self.drawListTableView()
         self.drawUserInfo()
-        self.drawTitleView()
+        self.drawTitleView(titleView: self.titleView, titleLabel: self.titleLabel, titleLoginButton: self.titleLoginButton, titleLogoutButton: self.titleLogoutButton, titleImage: self.titleImage, superView: self.view)
     }
 }
 
@@ -262,11 +279,11 @@ extension LoginViewController: LoginDelegate  {
     }
     
     func starRepository(owner: String, repo: String) -> Observable<Void> {
-        self.viewModel.starRepo(owner: owner, repo: repo).map { _ in }
+        self.viewModel.starRepo(owner: owner, repo: repo)
     }
     
     func unstarRepository(owner: String, repo: String) -> Observable<Void> {
-        self.viewModel.unstarRepo(owner: owner, repo: repo).map { _ in }
+        self.viewModel.unstarRepo(owner: owner, repo: repo)
     }
     
     func checkStarRepository(owner: String, repo: String) -> Observable<Bool> {

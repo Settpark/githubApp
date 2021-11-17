@@ -58,32 +58,20 @@ final class LoginViewModel {
             }
     }
     
-    func starRepo(owner: String, repo: String) -> Observable<Bool> {
+    func starRepo(owner: String, repo: String) -> Observable<Void> {
         let query = QueryItems()
         query.addQuery(newKey: "owner", newElement: owner)
         query.addQuery(newKey: "repo", newElement: repo)
         return self.usecase.requestStarRepo(httpMethod: .put, query: query)
-            .map { statusCode in
-                if statusCode > 400 {
-                    return false
-                } else {
-                    return true
-                }
-            }
+            .map { _ in return  }
     }
     
-    func unstarRepo(owner: String, repo: String) -> Observable<Bool> {
+    func unstarRepo(owner: String, repo: String) -> Observable<Void> {
         let query = QueryItems()
         query.addQuery(newKey: "owner", newElement: owner)
         query.addQuery(newKey: "repo", newElement: repo)
         return self.usecase.requestStarRepo(httpMethod: .delete, query: query)
-            .map { statusCode in
-                if statusCode > 400 {
-                    return false
-                } else {
-                    return true
-                }
-            }
+            .map { _ in return }
     }
     
     func isStarRepo(owner: String, repo: String) -> Observable<Bool> {

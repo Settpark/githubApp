@@ -18,6 +18,7 @@ final class RepositoryListViewModel {
     let output: PublishRelay<[RepositoryListSectionData]>
     private var currentSearchFieldText: String
     private var currentPage: BehaviorRelay<Int>
+    private var isScrolling: Bool
     
     init(usecaseLayer: SearchRepositoriesUsecase) {
         self.useCase = usecaseLayer
@@ -27,15 +28,18 @@ final class RepositoryListViewModel {
         self.output = PublishRelay<[RepositoryListSectionData]>()
         self.currentSearchFieldText = ""
         self.currentPage = BehaviorRelay(value: 1)
+        self.isScrolling = false
         
         input.flatMap { [weak self] text -> Observable<[RepositoryListSectionData]> in
             self?.currentSearchFieldText = text
             return self?.searchRepositoryList(with: text) ?? Observable.just([])
         }.subscribe { [weak self] sectionData in
             self?.output.accept(sectionData)
+            self?.isScrolling = false
         } onError: { [weak self] error in
-            //alert Controller
             self?.output.accept([])
+            self?.isScrolling = false
+            //alert Controller
         }.disposed(by: self.disposeBag)
         
         currentPage.flatMap { [weak self] page -> Observable<[RepositoryListSectionData]> in
@@ -44,9 +48,14 @@ final class RepositoryListViewModel {
             }
             return self?.requestAdditionalList(next: page) ?? Observable.just([])
         }.subscribe { [weak self] sectionData in
+            if sectionData.count == 0 {
+                return
+            }
             self?.output.accept(sectionData)
+            self?.isScrolling = false
         } onError: { [weak self] error in
             self?.output.accept([])
+            self?.isScrolling = false
             //alert Controller
         }.disposed(by: self.disposeBag)
     }
@@ -68,35 +77,6 @@ final class RepositoryListViewModel {
             }
     }
     
-    func checkStaredUserRepo(path: Paths, query: [URLQueryItem], method: HttpMethod) -> Observable<Bool?> {
-        //        guard let accessToken = userToken?.accessToken else {
-        //            return Observable.just(nil)
-        //        }
-        //        let tempToken = URLQueryItem(name: "token", value: accessToken)
-        //        var tempQuery = query
-        //        tempQuery.append(tempToken)
-        //
-        //        return repository.starUserrepo(path: path, query: tempQuery, method: method)
-        //            .map { statuscode -> Bool in
-        //                if statuscode > 400 { return false }
-        //                else { return true }
-        //            }
-        Observable.just(false)
-    }
-    
-    func starUserRepo(path: Paths, query: [URLQueryItem], method: HttpMethod) {
-        //        guard let accessToken = userToken?.accessToken else {
-        //            return
-        //        }
-        //        let tempToken = URLQueryItem(name: "token", value: accessToken)
-        //        var tempQuery = query
-        //        tempQuery.append(tempToken)
-        //
-        //        repository.starUserrepo(path: path, query: tempQuery, method: method)
-        //            .subscribe{ _ in }
-        //            .disposed(by: self.disposeBag)
-    }
-    
     func search(with text: String?) {
         guard let validText = text, text != "" else {
             return
@@ -110,6 +90,8 @@ final class RepositoryListViewModel {
     }
     
     func requestNextpage() {
+        if self.isScrolling { return }
+        self.isScrolling = true
         self.currentPage.accept(currentPage.value + 1)
     }
 }

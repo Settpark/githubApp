@@ -32,6 +32,10 @@ final class MainTabBarController: UITabBarController {
         super.viewWillAppear(true)
         setTabBarItem()
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+    }
 }
 
 extension MainTabBarController {

@@ -18,23 +18,30 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
     private var listDataSource: RxTableViewSectionedReloadDataSource<RepositoryListSectionData>!
     
     private let titleView: UIView
+    private let titleImage: UIImageView
     private let titleLabel: UILabel
     private let titleLoginButton: UIButton
     private let titleLogoutButton: UIButton
     private let searchButton: UIButton
     private let listTableview: UITableView
     private let searchField: UITextField
+    private let activityIndicator: UIActivityIndicatorView
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         self.disposeBag = DisposeBag()
         self.titleView = UIView()
+        self.titleImage = UIImageView()
         self.titleLabel = UILabel()
         self.titleLoginButton = UIButton()
         self.titleLogoutButton = UIButton()
         self.listTableview = UITableView()
         self.searchButton = UIButton()
         self.searchField = UITextField()
+        self.activityIndicator = UIActivityIndicatorView()
         super.init(nibName: nil, bundle: nil)
+        initTableview()
+        initSearchButton()
+        initActivityIndicator()
     }
     
     required init?(coder: NSCoder) {
@@ -48,25 +55,18 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
         self.addSubviews()
     }
-    
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        self.drawTitleView()
-        self.drawSearchfield(constraint: self.titleView)
-        self.drawSearchbutton(constraint: self.searchField)
-        self.drawTableview(constraint: self.searchField)
-    }
-    
+
     func initTableview() {
         self.listTableview.register(RepositoryListCell.self, forCellReuseIdentifier: RepositoryListCell.cellIdentifier)
+        
         self.listTableview.rx
             .setDelegate(self)
             .disposed(by: self.disposeBag)
+        
         self.listTableview.rx
-            .didEndScrollingAnimation.bind { [weak self] _ in
+            .didScroll.bind { [weak self] _ in
                 self?.requestNextPage()
             }.disposed(by: self.disposeBag)
     }
@@ -74,15 +74,25 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
     func initSearchButton() {
         self.searchField.rx.controlEvent(.editingDidEndOnExit)
             .bind { [weak self] _ in
-                self?.viewModel.search(with: self?.searchField.text)
-                self?.listTableview.contentOffset = .zero
+                self?.searchRepositories(with: self?.searchField.text)
+            }.disposed(by: self.disposeBag)
+        
+        self.searchField.rx.controlEvent(.touchDown)
+            .bind {
+                self.searchField.becomeFirstResponder()
             }.disposed(by: self.disposeBag)
         
         self.searchButton.rx.tap
             .bind { [weak self] _ in
-                self?.viewModel.search(with: self?.searchField.text)
-                self?.listTableview.contentOffset = .zero
+                self?.searchRepositories(with: self?.searchField.text)
             }.disposed(by: self.disposeBag)
+    }
+    
+    func searchRepositories(with text: String?) {
+        self.searchField.resignFirstResponder()
+        self.activityIndicator.startAnimating()
+        self.viewModel.search(with: text)
+        self.listTableview.contentOffset = .zero
     }
     
     func initLoginButton() {
@@ -114,10 +124,16 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
     }
     
     func bindViewModel() {
-        initTableview()
-        initDataSource()
-        initSearchButton()
         initLoginButton()
+        initDataSource()
+        drawViews()
+    }
+    
+    func drawViews() {
+        self.loginDelegate?.drawTitleView(titleView: self.titleView, titleLabel: self.titleLabel, titleLoginButton: self.titleLoginButton, titleLogoutButton: self.titleLogoutButton, titleImage: self.titleImage, superView: self.view)
+        self.drawSearchfield(constraint: self.titleView)
+        self.drawSearchbutton(constraint: self.searchField)
+        self.drawTableview(constraint: self.searchField)
     }
     
     func requestNextPage() {
@@ -125,6 +141,7 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
         let tableViewContentSize = listTableview.contentSize.height
 
         if contentOffsetY > tableViewContentSize - listTableview.frame.height {
+            self.activityIndicator.startAnimating()
             self.viewModel.requestNextpage()
         }
     }
@@ -143,7 +160,10 @@ extension RepositoryListViewController {
         
         self.viewModel.output
             .observe(on: MainScheduler.instance)
-            .bind(to: self.listTableview.rx.items(dataSource: self.listDataSource))
+            .do(onNext: { [weak self] _ in
+                self?.activityIndicator.stopAnimating()
+                self?.listTableview.isHidden = false
+            }).bind(to: self.listTableview.rx.items(dataSource: self.listDataSource))
             .disposed(by: self.disposeBag)
     }
 }
@@ -169,21 +189,22 @@ extension RepositoryListViewController {
         self.searchField.translatesAutoresizingMaskIntoConstraints = false
         self.searchField.leadingAnchor.constraint(equalTo: guide.safeAreaLayoutGuide.leadingAnchor, constant: 10).isActive = true
         self.searchField.topAnchor.constraint(equalTo: guide.safeAreaLayoutGuide.bottomAnchor, constant: 10).isActive = true
-        self.searchField.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: ViewRatio.searchFieldWidth.rawValue).isActive = true
+        self.searchField.trailingAnchor.constraint(greaterThanOrEqualTo: self.searchButton.leadingAnchor, constant: -10).isActive = true
         self.searchField.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: ViewRatio.searchFieldHeight.rawValue).isActive = true
         self.searchField.borderStyle = .roundedRect
     }
     
     func drawSearchbutton(constraint guide: UIView) {
-        self.searchButton.backgroundColor = .darkGray
+        self.searchButton.backgroundColor = .white
         self.searchButton.layer.masksToBounds = true
         self.searchButton.layer.cornerRadius = 5
-        self.searchButton.setTitle("검색", for: .normal)
+        self.searchButton.setImage(UIImage(systemName: "magnifyingglass"), for: .normal)
+        self.searchButton.tintColor = .black
         self.searchButton.translatesAutoresizingMaskIntoConstraints = false
         self.searchButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10).isActive = true
         self.searchButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor).isActive = true
-        self.searchButton.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: ViewRatio.searchButtonWidth.rawValue).isActive = true
-        self.searchButton.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: ViewRatio.searchFieldHeight.rawValue).isActive = true
+        self.searchButton.heightAnchor.constraint(equalTo: self.searchField.heightAnchor).isActive = true
+        self.searchButton.widthAnchor.constraint(equalTo: self.searchButton.heightAnchor).isActive = true
     }
     
     func drawTableview(constraint guide: UIView) {
@@ -199,41 +220,24 @@ extension RepositoryListViewController {
         }
     }
     
-    func drawTitleView() {
-        self.titleView.backgroundColor = .darkGray
-        self.titleView.translatesAutoresizingMaskIntoConstraints = false
-        self.titleView.centerXAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        self.titleView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
-        self.titleView.widthAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.widthAnchor).isActive = true
-        self.titleView.heightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.heightAnchor, multiplier: ViewRatio.topViewHeightRatio.rawValue).isActive = true
-        
-        self.titleLabel.text = "Github"
-        self.titleLabel.font = .systemFont(ofSize: 17)
-        self.titleLabel.sizeToFit()
-        self.titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.titleLabel.centerXAnchor.constraint(equalTo: self.titleView.centerXAnchor).isActive = true
-        self.titleLabel.centerYAnchor.constraint(equalTo: self.titleView.centerYAnchor).isActive = true
-        
-        self.titleLoginButton.sizeToFit()
-        self.titleLoginButton.setTitle("로그인", for: .normal)
-        self.titleLoginButton.translatesAutoresizingMaskIntoConstraints = false
-        self.titleLoginButton.centerYAnchor.constraint(equalTo: self.titleView.centerYAnchor).isActive = true
-        self.titleLoginButton.trailingAnchor.constraint(equalTo: self.titleView.trailingAnchor, constant: -10).isActive = true
-        
-        self.titleLogoutButton.sizeToFit()
-        self.titleLogoutButton.setTitle("로그아웃", for: .normal)
-        self.titleLogoutButton.translatesAutoresizingMaskIntoConstraints = false
-        self.titleLogoutButton.centerYAnchor.constraint(equalTo: self.titleView.centerYAnchor).isActive = true
-        self.titleLogoutButton.trailingAnchor.constraint(equalTo: self.titleView.trailingAnchor, constant: -10).isActive = true
+    func initActivityIndicator() {
+        self.activityIndicator.center = CGPoint(x: self.view.center.x, y: self.view.center.y + self.view.frame.height * 0.05)
+        self.activityIndicator.hidesWhenStopped = true
+        self.activityIndicator.style = .large
+        self.activityIndicator.color = .gray
     }
     
     func addSubviews() {
+        self.view.backgroundColor = .white
         self.view.addSubview(self.titleView)
         self.titleView.addSubview(self.titleLabel)
         self.titleView.addSubview(self.titleLoginButton)
         self.titleView.addSubview(self.titleLogoutButton)
+        self.titleView.addSubview(self.titleImage)
         self.view.addSubview(self.searchField)
         self.view.addSubview(self.searchButton)
         self.view.addSubview(self.listTableview)
+        self.view.addSubview(self.activityIndicator)
+        self.listTableview.isHidden = true
     }
 }
