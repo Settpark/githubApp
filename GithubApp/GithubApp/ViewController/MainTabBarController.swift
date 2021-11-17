@@ -48,8 +48,8 @@ extension MainTabBarController {
         let secondViewController = self.viewControllers?[1]
         secondViewController?.tabBarItem = tabTwoBarItem
         
-        self.tabBar.unselectedItemTintColor = .white
-        self.tabBar.tintColor = .white
-        self.tabBar.backgroundColor = .darkGray
+        self.tabBar.unselectedItemTintColor = .black
+        self.tabBar.tintColor = .black
+        self.tabBar.backgroundColor = .white
     }
 }

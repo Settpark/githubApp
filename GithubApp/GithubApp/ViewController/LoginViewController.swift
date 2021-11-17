@@ -130,7 +130,7 @@ extension LoginViewController {
     
     func drawLoginButton() {
         self.centerLoginButton.setTitle("로그인", for: .normal)
-        self.centerLoginButton.backgroundColor = .darkGray
+        self.centerLoginButton.backgroundColor = .lightGray
         self.centerLoginButton.layer.masksToBounds = true
         self.centerLoginButton.layer.cornerRadius = 5
         self.centerLoginButton.translatesAutoresizingMaskIntoConstraints = false

@@ -89,6 +89,7 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
     }
     
     func searchRepositories(with text: String?) {
+        guard text != "" else { return }
         self.searchField.resignFirstResponder()
         self.activityIndicator.startAnimating()
         self.viewModel.search(with: text)
