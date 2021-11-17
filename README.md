@@ -70,7 +70,7 @@ githubApp/GithubApp/GithubApp.xcworkspace
 
 <p align="left"><img src="./image/logoutLeft.png" width="" height="500"/>
 <img src="./image/logoutRight.png" width="" height="500"/>
-<img src="./image/logout.gif" width="" height="500"/>
+<img src="./image/Logout.gif" width="" height="500"/>
 </p>
 
 ---
