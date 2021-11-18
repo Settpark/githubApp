@@ -12,7 +12,7 @@ final class RepositoryListCell: UITableViewCell {
     
     static var cellIdentifier = "cell"
     
-    private let disposeBag: DisposeBag
+    private var disposeBag: DisposeBag
     private let customContentView: UIStackView
     private let topics: UIStackView
     private let etc: UIStackView
@@ -66,6 +66,7 @@ final class RepositoryListCell: UITableViewCell {
             $0.removeFromSuperview()
         }
         self.starButton.removeFromSuperview()
+        self.unstarButton.removeFromSuperview()
         self.title.subviews.forEach { view in
             view.removeFromSuperview()
         }
@@ -81,6 +82,7 @@ final class RepositoryListCell: UITableViewCell {
     }
     
     func configureCell(with source: RepositoriesModel, buttonDelegate: LoginDelegate) {
+        self.disposeBag = DisposeBag()
         self.delegate = buttonDelegate
         self.drawIcon()
         self.configureContentView()
