@@ -6,18 +6,22 @@
 //
 
 import Foundation
+import RxSwift
 
-final class URLSessionManagerStub: URLSessionProtocol {
+final class URLSessionManagerStub: ReactiveURLSessionProtocol {
     var requestParam: (
         url: URL?,
         method: String?
     )?
     
-    func dataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
-        self.requestParam = (
-            url: request.url,
-            method: request.httpMethod
-        )
-        return MockSessionDataTask.init()
+    func response(request: URLRequest) -> Observable<(response: HTTPURLResponse, data: Data)> {
+        return Observable<(response: HTTPURLResponse, data: Data)>.just((HTTPURLResponse(), Data()))
+    }
+    
+    func data(request: URLRequest) -> Observable<Data> {
+        return Observable.just(Data())
     }
 }
+
+
+

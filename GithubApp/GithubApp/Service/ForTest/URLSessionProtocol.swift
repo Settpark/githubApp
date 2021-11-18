@@ -6,11 +6,13 @@
 //
 
 import Foundation
+import RxSwift
 
-protocol URLSessionProtocol {
-    func dataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask
+protocol ReactiveURLSessionProtocol {
+    func response(request: URLRequest) -> Observable<(response: HTTPURLResponse, data: Data)>
+    func data(request: URLRequest) -> Observable<Data>
 }
 
-extension URLSession: URLSessionProtocol {
+extension Reactive: ReactiveURLSessionProtocol where Base: URLSession {
     
 }

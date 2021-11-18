@@ -8,7 +8,7 @@
 import Foundation
 
 enum Paths: String {
-    case Repositories = "/search/repositories"
+    case SearchRepo = "/search/repositories"
     case LoginPath = "/login/oauth/authorize"
     case AccessTokenPath = "/login/oauth/access_token"
     case User = "/user"

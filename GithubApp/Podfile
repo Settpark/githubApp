@@ -10,5 +10,9 @@ pod 'RxCocoa'
 pod 'RxDataSources'
 
   # Pods for GithubApp
+  target 'GithubAppTests' do
+    pod 'RxSwift'
+    pod 'RxCocoa'
+  end
 
 end

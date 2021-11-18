@@ -11,14 +11,14 @@ import RxCocoa
 
 final class APIService: APIServiceType {
     
-    private let urlsession: URLSessionProtocol
+    private let urlSessionManager: ReactiveURLSessionProtocol
     
-    init(urlSessionManager: URLSessionProtocol) {
-        self.urlsession = urlSessionManager
+    init(urlSessionManager: ReactiveURLSessionProtocol) {
+        self.urlSessionManager = urlSessionManager
     }
     
     func requestDataWithRx<T: Decodable>(type: T.Type, with request: URLRequest) -> Observable<T> {
-        return URLSession.shared.rx.data(request: request)
+        return urlSessionManager.data(request: request)
             .flatMap { [unowned self] data in
                 return self.decodedData(type: type, data: data)
             }
@@ -29,7 +29,7 @@ final class APIService: APIServiceType {
     }
     
     func requestRepositories<T: Decodable>(type: T.Type, query: QueryItems) -> Observable<T> {
-        let endPoint = EndPoint(host: .api, path: .Repositories)
+        let endPoint = EndPoint(host: .api, path: .SearchRepo)
         let url = endPoint.createValidURL(with: query)
         
         let request = URLRequest.init(url: url)
@@ -83,5 +83,4 @@ final class APIService: APIServiceType {
         
         return self.requestResponseWithRx(request: request)
     }
-    
 }
