@@ -15,7 +15,13 @@ final class URLSessionManagerStub: ReactiveURLSessionProtocol {
     )?
     
     func response(request: URLRequest) -> Observable<(response: HTTPURLResponse, data: Data)> {
-        return Observable<(response: HTTPURLResponse, data: Data)>.just((HTTPURLResponse(), Data()))
+        requestParam = (
+            url: request.url,
+            method: request.httpMethod
+        )
+        return Observable.create { emmiter in
+            return Disposables.create()
+        }
     }
     
     func data(request: URLRequest) -> Observable<Data> {

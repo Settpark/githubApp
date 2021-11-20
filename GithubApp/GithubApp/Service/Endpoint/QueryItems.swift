@@ -22,6 +22,10 @@ class QueryItems {
         return queryItems
     }
     
+    func isEqualQueryItem(index: Int, name: String, value: String) -> Bool {
+        return queryItems[index].name == name && queryItems[index].value == value
+    }
+    
     func addQuery(newKey: String, newElement: String) {
         queryItems.append(URLQueryItem(name: newKey, value: newElement))
     }

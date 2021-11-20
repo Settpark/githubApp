@@ -7,37 +7,14 @@
 
 import XCTest
 import RxSwift
+import RxBlocking
 
 @testable import GithubApp
 
 class GithubAppTests: XCTestCase {
-
-    override func setUpWithError() throws {
-        
-    }
-
-    override func tearDownWithError() throws {
-        
-    }
-
-    func testExample() throws {
-        
-    }
-
-    func testPerformanceExample() throws {
-        
-        measure {
-            
-        }
-    }
     
     func test_올바른_url인가_repositoryList_요청시() {
         //given
-        let disposeBag = DisposeBag()
-        
-        let promise = expectation(description: "성공!")
-        promise.assertForOverFulfill = false
-        
         let sessionManager = URLSessionManagerStub()
         let service = APIService.init(urlSessionManager: sessionManager)
         var param: (url: URL?, method: String?)?
@@ -50,20 +27,27 @@ class GithubAppTests: XCTestCase {
         var request = URLRequest(url: url)
         
         request.httpMethod = HttpMethod.get.rawValue
-        service.requestResponseWithRx(request: request)
-            .subscribe{ _ in
-                sessionManager.requestParam = (
-                    url: request.url,
-                    method: request.httpMethod
-                )
-                param = sessionManager.requestParam
-                promise.fulfill()
-            }.disposed(by: disposeBag)
+        let serviceTest = service.requestResponseWithRx(request: request)
         
         //then
-        wait(for: [promise], timeout: 3)
-        XCTAssertEqual(param?.url?.absoluteString, "https://api.github.com/search/repositories?q=RxSwift")
-        XCTAssertEqual(param?.method, "GET")
+        let _ = serviceTest.toBlocking(timeout: 3)
+        param = sessionManager.requestParam
+        XCTAssertEqual(param?.url?.absoluteString, "https://api.github.com/search/repositories?q=RxSift")
+        XCTAssertEqual(param?.method, "POST")
+        
     }
-
+    
+    func test_뷰모델에서_받은_조건을_적절하게_가공하는가() {
+        //given
+        let repodummy = RepositoryDummy()
+        let usecaseFakes = UsecaseFakes(repositoryLayer: repodummy)
+        var queryItems = QueryItems()
+        //when
+        let usecaseTest = usecaseFakes.requestRepositories(value: "RxSwift")
+        //then
+        let _ = usecaseTest.toBlocking(timeout: 1)
+        queryItems = usecaseFakes.query
+        XCTAssertTrue(queryItems.isEqualQueryItem(index: 0, name: "q", value: "RxSwft"))
+        XCTAssertTrue(queryItems.isEqualQueryItem(index: 1, name: "per_page", value: "1"))
+    }
 }

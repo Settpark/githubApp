@@ -13,6 +13,8 @@ pod 'RxDataSources'
   target 'GithubAppTests' do
     pod 'RxSwift'
     pod 'RxCocoa'
+    pod 'RxTest'
+    pod 'RxBlocking'
   end
 
 end

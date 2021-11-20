@@ -25,7 +25,7 @@ final class APIService: APIServiceType {
     }
     
     func requestResponseWithRx(request: URLRequest) -> Observable<(response: HTTPURLResponse, data: Data)> {
-        return URLSession.shared.rx.response(request: request)
+        return urlSessionManager.response(request: request)
     }
     
     func requestRepositories<T: Decodable>(type: T.Type, query: QueryItems) -> Observable<T> {

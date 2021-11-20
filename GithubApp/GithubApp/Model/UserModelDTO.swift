@@ -10,4 +10,11 @@ import Foundation
 struct UserModelDTO: Decodable {
     let login: String
     let avatarUrl: String?
+    
+    static var empty = Self()
+    
+    init() {
+        login = ""
+        avatarUrl = ""
+    }
 }
