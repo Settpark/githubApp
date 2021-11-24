@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 
-final class RepositoryListViewController: UIViewController, ViewModelBindable {
+final class RepositoryListViewController: UIViewController, ViewModelBindable, AlertControllerDelegate {
     
     var viewModel: RepositoryListViewModel!
     private weak var loginDelegate: LoginDelegate?
@@ -57,7 +57,19 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
         super.viewDidLoad()
         self.addSubviews()
     }
-
+    
+    func showAlertController(message: AlertMessage) {
+        DispatchQueue.main.async { [weak self] in
+            if self?.activityIndicator.isAnimating == true {
+                self?.activityIndicator.stopAnimating()
+            }
+            let alert = UIAlertController(title: "알림", message: message.rawValue, preferredStyle: .actionSheet)
+            let success = UIAlertAction(title: "확인", style: .default, handler: nil)
+            alert.addAction(success)
+            self?.present(alert, animated: true, completion: nil)
+        }
+    }
+    
     func initTableview() {
         self.listTableview.register(RepositoryListCell.self, forCellReuseIdentifier: RepositoryListCell.cellIdentifier)
         
@@ -89,7 +101,6 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
     }
     
     func searchRepositories(with text: String?) {
-        guard text != "" else { return }
         self.searchField.resignFirstResponder()
         self.activityIndicator.startAnimating()
         self.viewModel.search(with: text)
@@ -128,6 +139,7 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
         initLoginButton()
         initDataSource()
         drawViews()
+        self.viewModel.alertDelegate = self
     }
     
     func drawViews() {
@@ -140,7 +152,7 @@ final class RepositoryListViewController: UIViewController, ViewModelBindable {
     func requestNextPage() {
         let contentOffsetY = listTableview.contentOffset.y
         let tableViewContentSize = listTableview.contentSize.height
-
+        
         if contentOffsetY > tableViewContentSize - listTableview.frame.height {
             self.activityIndicator.startAnimating()
             self.viewModel.requestNextpage()
@@ -177,7 +189,7 @@ extension RepositoryListViewController: UITableViewDelegate {
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         let contentOffsetY = scrollView.contentOffset.y
         let tableViewContentSize = listTableview.contentSize.height
-
+        
         if contentOffsetY > tableViewContentSize - scrollView.frame.height {
             self.viewModel.requestNextpage()
         }
@@ -239,6 +251,5 @@ extension RepositoryListViewController {
         self.view.addSubview(self.searchButton)
         self.view.addSubview(self.listTableview)
         self.view.addSubview(self.activityIndicator)
-        self.listTableview.isHidden = true
     }
 }

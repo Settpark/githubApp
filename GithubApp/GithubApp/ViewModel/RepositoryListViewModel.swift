@@ -17,8 +17,10 @@ final class RepositoryListViewModel {
     private let input: PublishSubject<String>
     let output: PublishRelay<[RepositoryListSectionData]>
     private var currentSearchFieldText: String
-    private var currentPage: BehaviorRelay<Int>
+    private var currentSearchPage: Int
+    private var currentPage: PublishRelay<Int>
     private var isScrolling: Bool
+    weak var alertDelegate: AlertControllerDelegate?
     
     init(usecaseLayer: SearchRepositoriesUsecase) {
         self.useCase = usecaseLayer
@@ -27,7 +29,8 @@ final class RepositoryListViewModel {
         self.input = PublishSubject<String>()
         self.output = PublishRelay<[RepositoryListSectionData]>()
         self.currentSearchFieldText = ""
-        self.currentPage = BehaviorRelay(value: 1)
+        self.currentSearchPage = 1
+        self.currentPage = PublishRelay<Int>()
         self.isScrolling = false
         
         input.flatMap { [weak self] text -> Observable<[RepositoryListSectionData]> in
@@ -39,7 +42,7 @@ final class RepositoryListViewModel {
         } onError: { [weak self] error in
             self?.output.accept([])
             self?.isScrolling = false
-            //alert Controller
+            self?.alertDelegate?.showAlertController(message: .emptySearchBar)
         }.disposed(by: self.disposeBag)
         
         currentPage.flatMap { [weak self] page -> Observable<[RepositoryListSectionData]> in
@@ -49,6 +52,7 @@ final class RepositoryListViewModel {
             return self?.requestAdditionalList(next: page) ?? Observable.just([])
         }.subscribe { [weak self] sectionData in
             if sectionData.count == 0 {
+                self?.alertDelegate?.showAlertController(message: .emptyList)
                 return
             }
             self?.output.accept(sectionData)
@@ -56,12 +60,12 @@ final class RepositoryListViewModel {
         } onError: { [weak self] error in
             self?.output.accept([])
             self?.isScrolling = false
-            //alert Controller
+            self?.alertDelegate?.showAlertController(message: .emptyList)
         }.disposed(by: self.disposeBag)
     }
     
     func searchRepositoryList(with text: String) -> Observable<[RepositoryListSectionData]> {
-        self.currentPage.accept(1)
+//        self.currentPage.accept(1)
         return useCase.requestRepositories(value: text)
             .map { data in
                 let temp = [RepositoryListSectionData.init(items: data)]
@@ -79,19 +83,16 @@ final class RepositoryListViewModel {
     
     func search(with text: String?) {
         guard let validText = text, text != "" else {
+            self.alertDelegate?.showAlertController(message: .emptySearchBar)
             return
         }
         self.input.onNext(validText)
     }
     
-    private func setCurretpage(value: Int) {
-        //        self.currentPage = 0
-        //        self.repository.clearRepositories()
-    }
-    
     func requestNextpage() {
         if self.isScrolling { return }
         self.isScrolling = true
-        self.currentPage.accept(currentPage.value + 1)
+        self.currentSearchPage = self.currentSearchPage + 1
+        self.currentPage.accept(self.currentSearchPage)
     }
 }

@@ -45,6 +45,7 @@
 		82AF066027483C340008115B /* RepositoryLayerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82AF065F27483C340008115B /* RepositoryLayerProtocol.swift */; };
 		82CAF891273BF57200ED4A84 /* LoginDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CAF890273BF57200ED4A84 /* LoginDelegate.swift */; };
 		82CAF893273BF66000ED4A84 /* HttpMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82CAF892273BF66000ED4A84 /* HttpMethod.swift */; };
+		82D17428274EB26200C47139 /* AlertControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D17427274EB26200C47139 /* AlertControllerDelegate.swift */; };
 		82D52F3F27399337005A710D /* AccessTokenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D52F3E27399337005A710D /* AccessTokenModel.swift */; };
 		82D52F42273995FD005A710D /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D52F41273995FD005A710D /* Client.swift */; };
 		82D52F462739A36B005A710D /* UserModelDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D52F452739A36A005A710D /* UserModelDTO.swift */; };
@@ -111,6 +112,7 @@
 		82B5628F273C545D00E0ED75 /* URLSessionManagerStub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionManagerStub.swift; sourceTree = "<group>"; };
 		82CAF890273BF57200ED4A84 /* LoginDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDelegate.swift; sourceTree = "<group>"; };
 		82CAF892273BF66000ED4A84 /* HttpMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpMethod.swift; sourceTree = "<group>"; };
+		82D17427274EB26200C47139 /* AlertControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertControllerDelegate.swift; sourceTree = "<group>"; };
 		82D52F3E27399337005A710D /* AccessTokenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenModel.swift; sourceTree = "<group>"; };
 		82D52F41273995FD005A710D /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
 		82D52F452739A36A005A710D /* UserModelDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModelDTO.swift; sourceTree = "<group>"; };
@@ -274,6 +276,7 @@
 				829287662735A89A00DA4077 /* ViewRatio.swift */,
 				829287682735B41200DA4077 /* RepositoryListCell.swift */,
 				82CAF890273BF57200ED4A84 /* LoginDelegate.swift */,
+				82D17427274EB26200C47139 /* AlertControllerDelegate.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -552,6 +555,7 @@
 				82362413274230E4009D6D9B /* EndPoint.swift in Sources */,
 				82D55F70273C66AD00C1E9B7 /* ReactiveURLSessionProtocol.swift in Sources */,
 				8213F01727339FD300125B4C /* RepositoryListViewController.swift in Sources */,
+				82D17428274EB26200C47139 /* AlertControllerDelegate.swift in Sources */,
 				8290468D2734E584005FD0AB /* RepositoryLayerType.swift in Sources */,
 				82CAF893273BF66000ED4A84 /* HttpMethod.swift in Sources */,
 				829DA5282742F018007CAB93 /* CommonUsecase.swift in Sources */,
